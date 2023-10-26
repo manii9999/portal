@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+{% extends "c_updates.html" %}
+
+{% block data_content %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <title>Add Shift Update</title>
+    <style>
+        /* Center the form in the middle of the page */
+        body {
+            display: flex;
+            font-family: Tahoma, sans-serif;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 5;
+        }
+	h2 {
+	   font-size: 14px;
+	}
+
+        /* Style for textareas */
+        textarea {
+            width: 100%; /* Expand to full width of the container */
+            height: 30px;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        /* Style for the submit button */
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="number"] {
+            padding: 3px;
+            cursor: pointer;
+            width: 100%; /* Expand to full width of the container */
+            margin-bottom: 5px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .date-shift-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .date-shift-container input[type="date"] {
+            width: 70%;
+            height: 20px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+	.column, .row:after {
+	  box-sizing: border-box;
+	}
+
+	/* Create two equal columns that floats next to each other */
+	.column {
+	  float: left;
+	  width: 50%;
+	  padding: 10px;
+	  height: auto; /* Should be removed. Only for demonstration */
+	}
+
+	/* Clear floats after the columns */
+	.row:after {
+	  content: "";
+	  display: table;
+	  clear: both;
+	}
+
+    </style>
+    <script>
+        // Function to auto-expand textarea based on content
+        function autoExpand(textarea) {
+            textarea.style.height = 'auto'; // Reset the height to auto
+            textarea.style.height = (textarea.scrollHeight) + 'px'; // Set the height to the scrollHeight
+        }
+
+        // Attach the autoExpand function to all textareas with the 'auto-expand' class
+        window.addEventListener('DOMContentLoaded', function () {
+            var textareas = document.querySelectorAll('textarea.auto-expand');
+            textareas.forEach(function (textarea) {
+                textarea.addEventListener('input', function () {
+                    autoExpand(this);
+                });
+                // Initially adjust the height of textareas on page load
+                autoExpand(textarea);
+            });
+        });
+    </script>
+</head>
+<body>
+    <form method="POST">
+        <!-- Include form fields for adding a new update -->
+        <h2>Shift Details</h2>
+        <div class="date-shift-container">
+            <div>
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required value="{{ selected_date|default('yyyy-MM-dd') }}" max="{{ current_date }}">
+            </div>
+            <div>
+                <label for="shift_type">Shift Type:</label>
+                <select name="shift_type" class="shift-type-select" required>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Night">Night</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Include other form fields -->
+        <!-- For example: -->
+<div class="row">
+        <div class="column" style="background-color:#bbb;">
+                <label for="done_in_shift">Done in Shift:</label>
+                <textarea name="done_in_shift" rows="1" cols="50" required class="auto-expand"></textarea>
+                <label for="actioned_alerts">Actioned Alerts:</label>
+                <input type="number" name="actioned_alerts" required>
+		<label for="alerts_handled">Alerts Handled:</label>
+                <input type="number" name="alerts_handled" required>
+                <label for="manual_restarts">Manual Restarts:</label>
+                <input type="number" name="manual_restarts" required>
+                <label for="db_queries_single">DB Queries Single:</label>
+		<input type="number" name="db_queries_single" required>
+		<label for="db_queries_all_pods">DB Queries All Pods:</label>
+		<input type="number" name="db_queries_all_pods" required>
+            </div>
+	<div class="column" style="background-color:#bbb;">
+                <label for="update_to_next_shift">Update to Next Shift:</label>
+                <textarea name="update_to_next_shift" rows="1" cols="50" required class="auto-expand"></textarea>
+                <label for="tasks">Tasks:</label>
+                <input type="number" name="tasks" required>
+                <label for="resolved_tasks">Resolved Tasks:</label>
+                <input type="number" name="resolved_tasks" required>
+		<label for="closed_tasks">Closed Tasks:</label>
+                <input type="number" name="closed_tasks" required>
+                <label for="db_loads">DB Loads:</label>
+                <textarea name="db_loads" rows="1" cols="50" required class="auto-expand"></textarea>
+                <label for="follow_ups">Follow Ups:</label>
+                <textarea name="follow_ups" rows="1" cols="50" required class="auto-expand"></textarea>
+            </div>
+        </div>
+
+        <!-- Add more form fields using the same structure -->
+
+        <input type="submit" value="Add Update">
+    </form>
+</body>
+</html>
+{% endblock %}

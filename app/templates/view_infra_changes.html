@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+{% extends "v_updates.html" %}
+{% block data_content %}
+<html>
+<head>
+    <title>Capacity Changes</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+	    margin-top: 5px;
+	    font-family: Tahoma, sans-serif;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+	    font-size: 12px;
+	    font-family: Tahoma, sans-serif;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+	h2 {
+	    font-size: 14px;
+	    font-family: Tahoma, sans-serif;
+	}
+	label {
+	    font-family: Tahoma, sans-serif;
+	    font-size: 12px;
+	}
+    </style>
+</head>
+<body>
+    <h2>Capacity Changes</h2>
+
+    <!-- Filter Options -->
+    <form action="/infra_changes" method="POST">
+        <label for="filter_pod">Filter by POD:</label>
+        <select id="filter_pod" name="pod">
+            <option value="">All</option>
+            <option value="test1">test1</option>
+            <option value="test2">test2</option>
+            <!-- Add more options here -->
+        </select>
+	<label for="filter_category">Category:</label>
+        <select id="filter_category" name="category">
+            <option value="">All</option>
+            <option value="RAM">RAM</option>
+            <option value="CPU">CPU</option>
+	    <option value="DATA Disk">DATA Disk</option>
+            <option value="OS Disk">OS Disk</option>
+            <!-- Add more options here -->
+        </select>
+
+
+        <label for="filter_date">Date:</label>
+        <input type="date" id="filter_date" name="date">
+
+        <label for="filter_node">Node:</label>
+        <input type="text" id="filter_node" name="node">
+
+        <button type="submit">Apply Filters</button>
+    </form>
+
+    <!-- Data Table -->
+    <table>
+        <tr>
+            <th>Date of Change</th>
+            <th>POD</th>
+            <th>Node Names</th>
+            <th>Category</th>
+            <th>Change From</th>
+            <th>Change To</th>
+            <th>Status</th>
+            <th>Jira</th>
+            <th>Approved By</th>
+        </tr>
+        {% for change in infra_changes %}
+        <tr>
+            <td>{{ change.date_of_change.strftime('%d-%m-%Y') }}</td>
+            <td>{{ change.pod }}</td>
+            <td>{{ change.node_names }}</td>
+            <td>{{ change.category }}</td>
+            <td>{{ change.change_from }}</td>
+            <td>{{ change.change_to }}</td>
+            <td>{{ change.status }}</td>
+            <td>{{ change.jira }}</td>
+            <td>{{ change.approved_by }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+
+{% endblock %}

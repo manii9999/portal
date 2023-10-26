@@ -1,0 +1,214 @@
+{% extends "c_updates.html" %}
+
+{% block data_content %}
+<style>
+        body {
+            display: flex;
+            font-family: Tahoma, sans-serif;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 5;
+        }
+
+    h2 {
+        font-size: 14px;
+    }
+    .error-message {
+        color: red;
+        margin-top: -20px;
+        padding: 5px;
+    }
+    .form-label {
+        display: inline-block;
+        width: 150px;
+        text-align: right;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-size: 12px;
+	font-family: Tahoma, sans-serif;
+    }
+    button {
+        margin-top: 10px;
+    }
+    .submit {
+        margin-left: 210px;
+    }
+
+    .select {
+        font-size: 12px;
+        width: 50px;
+    }
+    .success-message {
+        color: green;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+    label {
+        margin-left: 40px;
+        font-size: 12px;
+	font-family: Tahoma, sans-serif;
+    }
+    .form-field {
+        display: inline-block;
+        width: 200px;
+    }
+    .custom {
+        display: inline-block;
+        width: 100px;
+        margin-left: 250px;
+    }
+    .node-names-label {
+        display: inline-block;
+        width: 150px;
+        text-align: right;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-size: 12px;
+        margin-left: 40px;
+	font-family: Tahoma, sans-serif;
+    }
+</style>
+
+<div class="form">
+    <h2>Infra Changes</h2>
+    <form method="POST" id="infraChangesForm">
+        <label class="form-label" for="pod">POD:</label>
+        <select id="pod" name="pod" required class="form-field">
+            <option value="" disabled selected>--select--</option>
+            <option value="test1">test1</option>
+            <option value="test2">test2</option>
+            <option value="test3">test3</option>
+            <option value="test4">test4</option>
+        </select><br>
+
+        <!-- Node Name Input -->
+        <label class="node-names-label" for="node_name">Node Names:</label>
+        <input type="text" name="node_names" required class="form-field" id="nodeNamesField">
+        <button type="button" id="addNodeNameButton">+</button>
+        <button type="button" id="removeNodeNameButton">-</button>
+        <div id="nodeNamesContainer"></div>
+
+        <br>
+
+        <label for="change_description" class="form-label">Change Description:</label>
+        <textarea id="change_description" name="change_description" required class="form-field"></textarea><br>
+
+        <label for="date_of_change" class="form-label">Date of Change:</label>
+        <input type="date" id="date_of_change" name="date_of_change" required class="form-field" max="{{ current_date.strftime('%Y-%m-%d') }}"><br>
+
+
+
+        <label class="form-label" for="status">Status:</label>
+        <select id="status" name="status" required class="form-field">
+            <option value="" disabled selected>--select--</option>
+            <option value="Done">Done</option>
+            <option value="Open">Open</option>
+        </select><br>
+
+        <label class="form-label" for="category">Category:</label>
+        <select id="category" name="category" required class="form-field">
+            <option value="" disabled selected>--select--</option>
+            <option value="RAM">RAM</option>
+            <option value="CPU">CPU</option>
+            <option value="Data Disk">Data Disk</option>
+            <option value="OS Disk">OS Disk</option>
+        </select><br>
+                <label class="form-label" for="change_from">Change From:</label>
+        <select id="change_from" name="change_from" required class="form-field">
+            <option value="" disabled selected>--select--</option>
+        </select><br>
+
+        <label class="form-label" for="change_to">Change To:</label>
+        <select id="change_to" name="change_to" required class="form-field">
+            <option value="" disabled selected>--select--</option>
+        </select><br>
+
+
+        <label class="form-label" for="jira">Jira:</label>
+        <input type="text" id="jira" name="jira" placeholder="SO-" required class="form-field"><br>
+
+        <label class="form-label" for="approved_by">Approved By:</label>
+        <select id="approved_by" name="approved_by" required class="form-field">
+            <option value="" disabled selected>--select--</option>
+            <option value="User1">User1</option>
+            <option value="User2">User2</option>
+            <option value="User3">User3</option>
+            <option value="User4">User4</option>
+        </select><br>
+
+
+        <label class="form-label" for="remarks">Remarks:</label>
+        <textarea id="remarks" name="remarks" class="form-field"></textarea><br>
+
+        <!--    <button type="submit" class="form-field">Submit</button>  -->
+        <!-- Existing form elements... -->
+
+         <input type="submit" value="Submit" class="custom">
+
+    </form>
+</div>
+<script>
+    // JavaScript to set the date input to the current date
+    window.onload = function () {
+        let currentDate = new Date().toISOString().split('T')[0];
+        document.getElementById('date').value = currentDate;
+        setTimeout(hideFlashMessages, 5000);
+    };
+
+    function hideFlashMessages() {
+        const flashMessages = document.querySelectorAll('.flash-message');
+        flashMessages.forEach((message) => {
+            message.style.display = 'none';
+        });
+    }
+
+    const categorySelect = document.getElementById('category');
+    const changeFromSelect = document.getElementById('change_from');
+    const changeToSelect = document.getElementById('change_to');
+
+    categorySelect.addEventListener('change', () => {
+        const selectedCategory = categorySelect.value;
+        const changeOptions = changeFromToOptions[selectedCategory] || [];
+
+        changeFromSelect.innerHTML = '';
+        changeToSelect.innerHTML = '';
+
+        changeOptions.forEach(option => {
+            const newOption = document.createElement('option');
+            newOption.value = option;
+            newOption.text = option;
+            changeFromSelect.appendChild(newOption.cloneNode(true));
+            changeToSelect.appendChild(newOption.cloneNode(true));
+        });
+    });
+
+    const changeFromToOptions = {
+        CPU: ['1', '2', '4', '8', '12', '16', '24', '32', '36', '40', '44', '48'],
+        RAM: ['1 GB', '2 GB', '4 GB', '8 GB'],
+        'Data Disk': ['1 GB', '2 GB', '4 GB', '8 GB'],
+        'OS Disk': ['1 GB', '2 GB', '4 GB', '8 GB'],
+    };
+
+    document.getElementById('addNodeNameButton').addEventListener('click', function () {
+        const nodeNamesContainer = document.getElementById('nodeNamesContainer');
+        const newNodeNameInput = document.createElement('input');
+        newNodeNameInput.type = 'text';
+        newNodeNameInput.name = 'node_names';
+        newNodeNameInput.required = true;
+        nodeNamesContainer.appendChild(newNodeNameInput);
+    });
+
+    document.getElementById('removeNodeNameButton').addEventListener('click', function () {
+        const nodeNamesContainer = document.getElementById('nodeNamesContainer');
+        const lastNodeNameInput = nodeNamesContainer.lastChild;
+        if (lastNodeNameInput) {
+            nodeNamesContainer.removeChild(lastNodeNameInput);
+        }
+    });
+</script>
+{% endblock %}
+

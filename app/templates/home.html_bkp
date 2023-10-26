@@ -1,0 +1,281 @@
+{% extends "common_template.html" %}
+
+{% block content %}
+    <style>
+        body {
+            background: linear-gradient(107.74deg, #f2f2f2, #d9d9d9, #b3b3b3 147.42%);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        /* Style for shift-details and update-list sections */
+        .shift-details {
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            padding: 5px;
+            margin-top: 45px; /* Adjusted margin-top to avoid overlap with header */
+        }
+
+        .shift-details h2 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            margin-top: 0;
+            height: 5px;
+            color: #595959;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 5px; /* Increased padding for better spacing */
+            border-bottom: 1px solid #ddd;
+            color: #333;
+            font-size: 10px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+        .table-container {
+            max-width: 100%;
+            overflow-x: auto; /* Add horizontal scroll if needed */
+        }
+
+        /* Style for the tooltip text */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 80px;
+            background-color: #333; /* Background color for tooltip */
+            color: #fff; /* Text color for tooltip */
+            text-align: center;
+            border-radius: 3px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        /* Show the tooltip text when hovering over the icon container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+                        /* Style for the footer */
+        footer {
+            background-color: #f2f2f2;
+            padding: 2px;
+            text-align: left;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+        }
+
+        footer p {
+            margin: 5px;
+            padding-left: 5px;
+        }
+
+        footer .test-text {
+            color: #0073e6;
+            font-family: "Open Sans", sans-serif;
+            font-size: 10px;
+        }
+
+        footer .year-text {
+            color: #595959;
+            font-family: "Open Sans", sans-serif;
+        }
+
+.search-bar {
+    position: absolute;
+    top: 100px;
+    right: 20px;
+}
+
+.search-container {
+    display: flex;
+}
+
+#search-input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+#search-button {
+    background-color: #0077c8;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+    .rectangle-container {
+        display: flex;
+        flex-direction: column; /* Display boxes horizontally */
+	align-items: flex-start;
+	margin-left: 100px;
+    }
+
+    /* Style for the rectangle boxes */
+    .rectangle-box {
+        width: 300px;
+        height: 125px;
+        background: linear-gradient(107.74deg, #0077c8 -13.29%, #7cefff 147.42%);
+        color: #fff;
+        text-align: center;
+	margin-top: 60px;
+        line-height: 100px;
+        margin: 10px;
+        border-radius: 10px;
+        text-decoration: none;
+    }
+
+    /* Additional styles for the text inside rectangle boxes */
+    .rectangle-box a {
+        color: #fff;
+        text-decoration: none;
+	text-align: center;
+	margin-top: 60px;
+    }
+    </style>
+    <!-- Add this script to enable search functionality -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const routeNames = [
+            'Add critical Update',
+            'View Updates',
+            'Critical Updates',
+            'Tracker',
+	    'Monthly',
+	    'last month',
+	    'last three months',
+	    'last six months',
+	    'view tracker',
+	    'add capacity changes',
+	    'view capacity changes',
+            'commands'
+            
+	    
+            // Add more route names as needed
+        ];
+
+        const routeUrls = [
+            '{{ url_for("add") }}',
+            '{{ url_for("view_updates") }}',
+            '{{ url_for("critical_updates") }}',
+            '{{ url_for("tracker") }}',
+            '{{ url_for("monthly") }}',
+            '{{ url_for("last_month_p0_updates") }}',
+            '{{ url_for("last_threemonth_p0_updates") }}',
+            '{{ url_for("last_sixmonth_p0_updates") }}',
+            '{{ url_for("view_tracker_data") }}',
+            '{{ url_for("add_infra_change") }}',
+            '{{ url_for("infra_changes") }}',
+            '{{ url_for("view_commands") }}'
+            // Add more route URLs as needed
+        ];
+
+        const searchInput = document.getElementById('search-input');
+        const resultsContainer = document.querySelector('.results-container');
+
+        let hideResultsTimeout; // Variable to store the timeout ID
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            resultsContainer.style.display = 'block'; // Show results container
+
+            if (!searchTerm) {
+                resultsContainer.innerHTML = '<p>Please enter a term.</p>';
+                hideResultsTimeout = setTimeout(hideResults, 3000); // Set a timeout to hide results
+                return;
+            }
+
+            clearTimeout(hideResultsTimeout); // Clear the previous timeout
+            const filteredRoutes = routeNames.filter(name => name.toLowerCase().includes(searchTerm));
+            displayResults(filteredRoutes);
+        });
+
+        function displayResults(results) {
+            resultsContainer.innerHTML = '';
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<p>No results found.</p>';
+            } else {
+                results.forEach(name => {
+                    const index = routeNames.indexOf(name);
+                    if (index !== -1) {
+                        const resultItem = document.createElement('div');
+                        resultItem.textContent = name;
+                        resultItem.style.cursor = 'pointer'; // Add a pointer cursor
+                        resultItem.addEventListener('click', function() {
+                            window.location.href = routeUrls[index]; // Redirect when clicked
+                        });
+                        resultsContainer.appendChild(resultItem);
+                    }
+                });
+            }
+        }
+
+        function hideResults() {
+            resultsContainer.style.display = 'none';
+        }
+    });
+</script>
+
+
+    <div class="search-bar">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search by content">
+            <button id="search-button">Search</button>
+        </div>
+        <div class="results-container">
+            <!-- Search results will be displayed here -->
+        </div>
+    </div>
+<div class="rectangle-container">
+    <div class="rectangle-box">
+        <a href="c_updates">Add Updates</a>
+    </div>
+    <div class="rectangle-box">
+        <a href="v_updates">View Updates</a>
+    </div>
+    <div class="rectangle-box">
+        <a href="critical_updates">Critical Updates</a>
+    </div>
+    <div class="rectangle-box">
+        <a href="t_updates">Tracker</a>
+    </div>
+    <div class="rectangle-box">
+        <a href="view_commands">Command Center</a>
+    </div>
+</div>
+
+
+
+   <footer>
+        <p class="test-text">Test <span class="year-text">© 2023</span></p>
+   </footer>
+{% endblock %}
+

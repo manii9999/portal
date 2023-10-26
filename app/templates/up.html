@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+{% extends "critical_updates.html" %}
+{% block data_content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Custom Time Range</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #0073e6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+
+</head>
+<body>
+   <h2>Select Custom Time Range</h2>
+
+    <form method="POST" action="/custom_time_range_updates">
+        <label for="fromDate">From Date:</label>
+        <input type="date" id="fromDate" name="fromDate" required>
+
+        <label for="toDate">To Date:</label>
+        <input type="date" id="toDate" name="toDate" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Display the data here -->
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>P0 Updates</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for update in updates %}
+            <tr>
+                <td>{{ update.date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ update.p0_updates }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // Get the current date in the format "YYYY-MM-DD"
+        const currentDate = new Date().toISOString().split('T')[0];
+
+        // Set the max attribute for both input fields to the current date
+        document.getElementById('fromDate').setAttribute('max', currentDate);
+        document.getElementById('toDate').setAttribute('max', currentDate);
+    </script>
+</body>
+</html>
+
+{% endblock %}

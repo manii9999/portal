@@ -1,0 +1,193 @@
+{% extends "critical_updates.html" %}
+{% block data_content %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+  button.submit-button,
+  button.download-button {
+    background-color: #80669d;
+    color: #fff;
+    padding: 3px 5px;
+    display: inline-block;
+    border: none;
+    border-radius: 5px;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+
+  button.submit-button:hover,
+  button.download-button:hover {
+    background-color: #0056b3;
+  }
+
+  h2 {
+    font-size: 12px;
+    font-family: Tahoma, sans-serif;
+  }
+
+  th {
+    font-size: 12px;
+    font-family: Tahoma, sans-serif;
+    text-align: left;
+    padding-right: 20px;
+    color: #262626;
+  }
+
+  td {
+    font-size: 12px;
+    font-family: Tahoma, sans-serif;
+    text-align: left;
+    padding-right: 20px;
+    color: #0066cc;
+  }
+
+  label {
+    color: #262626;
+    font-family: Tahoma, sans-serif;
+    font-weight: bold;
+    text-align: left;
+    padding: 2px;
+    font-size: 12px;
+  }
+
+  .container {
+    max-width: 1250px;
+    margin: 5px auto 0;
+    margin-top: 8px;
+    font-family: Tahoma, sans-serif;
+    color: #ff531a;
+  }
+
+  .no-data {
+    font-size: 12px;
+    color: #b30000;
+  }
+ button.download-button {
+    background-color: #80669d;
+    color: #fff;
+    padding: 3px 5px;
+    display: inline-block;
+    border: none;
+    border-radius: 5px;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+
+  button.download-button:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+<h2>Select a Month and Year</h2>
+	<form method="POST" id="update-form">
+  <label for="year">Year:</label>
+  <select id="year" name="year">
+    <!-- Replace with your options for years -->
+    <option value="2023">2023</option>
+    <option value="2024">2024</option>
+    <option value="2025">2025</option>
+    <option value="2026">2026</option>
+    <option value="2027">2027</option>
+    <option value="2028">2028</option>
+    <option value="2029">2029</option>
+    <option value="2030">2030</option>
+    <!-- Add more years if needed -->
+  </select>
+
+  <label for="month">Month:</label>
+  <select id="month" name="month">
+    <option value="" disabled selected>--select--</option>
+    <option value="01" {% if selected_month == "01" %}selected{% endif %}>January</option>
+    <option value="02" {% if selected_month == "02" %}selected{% endif %}>February</option>
+    <option value="03" {% if selected_month == "03" %}selected{% endif %}>March</option>
+    <option value="04" {% if selected_month == "04" %}selected{% endif %}>April</option>
+    <option value="05" {% if selected_month == "05" %}selected{% endif %}>May</option>
+    <option value="06" {% if selected_month == "06" %}selected{% endif %}>June</option>
+    <option value="07" {% if selected_month == "07" %}selected{% endif %}>July</option>
+    <option value="08" {% if selected_month == "08" %}selected{% endif %}>August</option>
+    <option value="09" {% if selected_month == "09" %}selected{% endif %}>September</option>
+    <option value="10" {% if selected_month == "10" %}selected{% endif %}>October</option>
+    <option value="11" {% if selected_month == "11" %}selected{% endif %}>November</option>
+    <option value="12" {% if selected_month == "12" %}selected{% endif %}>December</option>
+  </select>
+  <input type="radio" id="p0" name="updates" value="P0">
+  <label for="p0">P0 Updates</label>
+
+  <input type="radio" id="p1" name="updates" value="P1">
+  <label for="p1">P1 Updates</label>
+
+    <input type="hidden" id="selected_month" name="selected_month">
+
+  <button type="submit" class="submit-button" onclick="updateSelectedMonth()">Submit</button>
+</form>
+<script>
+  // JavaScript to set the selected month in the dropdown
+  $(document).ready(function () {
+    const monthSelect = $("#month");
+    const selectedMonth = "{{ selected_month }}";
+    if (selectedMonth) {
+      monthSelect.val(selectedMonth);
+    }
+  });
+
+  // JavaScript to submit the form using AJAX
+  function submitForm() {
+    const form = $("#update-form");
+    const selectedMonth = $("#month").val();
+    $("#selected_month").val(selectedMonth);
+
+    $.ajax({
+      type: form.attr("method"),
+      url: form.attr("action"),
+      data: form.serialize(),
+      success: function (response) {
+        // Update the table with the received data
+        $("#update-data").html(response);
+      }
+    });
+  }
+</script>
+
+{% if updates %}
+<h2>{{ selected_updates }} Updates For {{ formatted_date }}</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Category</th>
+      <th>Description</th>
+      <th>Duration</th>
+      <th>POD</th>
+      <th>Service Impacted</th>
+      <th>Reported By</th>
+      <th>Updated By</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for update in updates %}
+    <tr>
+      <td>{{ update.date.strftime('%d-%m-%Y') }}</td>
+      <td>{{ update.category }}</td>
+      <td>{{ update.description }}</td>
+      <td>{{ update.duration }}</td>
+      <td>{{ update.podname }}</td>
+      <td>{{ update.service_impacted }}</td>
+      <td>{{ update.reported_by }}</td>
+      <td>{{ update.updated_by }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="no-data">No data available for the selected month and year.</p>
+{% endif %}
+</form>
+
+{% endblock %}

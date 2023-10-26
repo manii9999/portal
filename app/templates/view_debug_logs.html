@@ -1,0 +1,116 @@
+{% extends "d_updates.html" %}
+{% block data_content %}
+<link rel="stylesheet" href="static/button.css">
+<style>
+    h2 {
+        font-size: 14px;
+	font-family: Tahoma, sans-serif;
+    }
+    .error-message {
+        color: red;
+        margin-top: -20px;
+        padding: 5px;
+    }
+    .form-label {
+        display: inline-block;
+	font-family: Tahoma, sans-serif;
+        width: 150px;
+        text-align: right;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-size: 12px;
+    }
+   select {
+        font-size: 12px;
+   }
+   .success-message {
+        color: green;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    table, th, td {
+        border: 1px solid #ddd;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        text-align: center;
+        padding: 5px;
+        font-size: 12px;
+        vertical-align: middle; /* Vertically align content in cells */
+	font-family: Tahoma, sans-serif;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .update-form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .update-button {
+        margin-left: 10px; /* Adjust the spacing between the select and button */
+    }
+</style>
+<body>
+<div class="message">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</div>
+<div class="form">
+    <h2>Debug Logs</h2>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Pod Name</th>
+            <th>Application</th>
+            <th>Node Names</th>
+            <th>Jira ID</th>
+            <th>Status</th>
+            <th>Done By</th>
+            <th>Closed Date</th>
+        </tr>
+        {% for debug_log in debug_logs %}
+            <tr>
+                <td>{{ debug_log.date }}</td>
+                <td>{{ debug_log.pod_name }}</td>
+                <td>{{ debug_log.application }}</td>
+                <td>{{ debug_log.node_names }}</td>
+                <td>{{ debug_log.jira_id }}</td>
+                <td>
+                    <form class="update-form" method="POST" action="{{ url_for('update_jira_status', id=debug_log.id) }}">
+                        <select name="jira_status">
+                            <option value="Open" {% if debug_log.jira_status == 'Open' %}selected{% endif %}>Open</option>
+                            <option value="In Progress" {% if debug_log.jira_status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                            <option value="Closed" {% if debug_log.jira_status == 'Closed' %}selected{% endif %}>Closed</option>
+                        </select>
+                        <button class="update-button" type="submit">Update</button>
+                    </form>
+                </td>
+                <td>{{ debug_log.done_by }}</td>
+                <td>{{ debug_log.closed_date }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>
+
+{% endblock %}
+

@@ -1,0 +1,153 @@
+{% extends "c_updates.html" %}
+
+{% block data_content %}
+<style>
+    h2 {
+	font-size: 14px;
+    }
+    .error-message {
+        color: red;
+        margin-top: -20px;
+        padding: 5px;
+    }
+    .form-label {
+        display: inline-block;
+        width: 150px;
+        text-align: right;
+        padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: 12px;
+    }
+    button {
+	margin-left: 170px;
+	margin-top: 10px;
+   }
+   select {
+	font-size: 12px;
+   }
+   .success-message {
+        color: green;
+        margin-top: 10px;
+        font-size: 14px;
+
+</style>
+
+<div class="form">
+    <h2>Infra Changes</h2>
+        <form method="POST" id="infraChangesForm">
+        <label class="form-label" for="pod">POD:</label>
+        <select id="pod" name="pod" required>
+            <option value="" disabled selected>--select--</option>
+            <option value="test1">test1</option>
+            <option value="test2">test2</option>
+            <option value="test3">test3</option>
+            <option value="test4">test4</option>
+        </select><br>
+
+        <!-- Node Name Input -->
+        <div id="nodeNamesDiv">
+            <label class="form-label" for="node_name">Node Names:</label>
+            <div id="nodeNamesContainer">
+                <input type="text" name="node_names" required>
+            </div>
+            <button type="button" onclick="addNodeNameField()">Add Node Name</button>
+        </div>
+
+        <label for="change_description">Change Description:</label>
+        <textarea id="change_description" name="change_description" required></textarea><br>
+
+        <label for="date_of_change">Date of Change:</label>
+        <input type="date" id="date_of_change" name="date_of_change" required><br>
+
+        <label class="form-label" for="status">Status:</label>
+        <select id="status" name="status" required>
+            <option value="" disabled selected>--select--</option>
+            <option value="Done">Done</option>
+            <option value="Open">Open</option>
+        </select><br>
+
+        <label class="form-label" for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="" disabled selected>--select--</option>
+            <option value="RAM">RAM</option>
+            <option value="CPU">CPU</option>
+            <option value="Data Disk">Data Disk</option>
+            <option value="OS Disk">OS Disk</option>
+        </select><br>
+
+        <label class="form-label" for="jira">Jira:</label>
+        <input type="text" id="jira" name="jira" placeholder="SO-" required><br>
+
+        <label class="form-label" for="approved_by">Approved By:</label>
+        <select id="approved_by" name="approved_by" required>
+            <option value="" disabled selected>--select--</option>
+            <option value="User1">User1</option>
+            <option value="User2">User2</option>
+            <option value="User3">User3</option>
+            <option value="User4">User4</option>
+        </select><br>
+
+        <label class="form-label" for="change_from">Change From:</label>
+        <select id="change_from" name="change_from" required>
+            <option value="" disabled selected>--select--</option>
+        </select><br>
+
+        <label class="form-label" for="change_to">Change To:</label>
+        <select id="change_to" name="change_to" required>
+            <option value="" disabled selected>--select--</option>
+        </select><br>
+
+        <label class="form-label" for="remarks">Remarks:</label>
+        <textarea id="remarks" name="remarks"></textarea><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+</div>
+
+<script>
+    // JavaScript to set the date input to the current date
+    window.onload = function () {
+        let currentDate = new Date().toISOString().split('T')[0];
+        document.getElementById('date').value = currentDate;
+        setTimeout(hideFlashMessages, 5000);
+    };
+        function hideFlashMessages() {
+        const flashMessages = document.querySelectorAll('.flash-message');
+        flashMessages.forEach((message) => {
+            message.style.display = 'none';
+        });
+    }
+
+    // Function to validate the 'Duration' field format (hh:mm)
+    function validateDuration() {
+        const hours = document.getElementById('hours').value;
+        const minutes = document.getElementById('minutes').value;
+
+        if (!hours || !minutes) {
+            const durationHelp = document.getElementById('durationHelp');
+            durationHelp.textContent = 'Please select hours and minutes.';
+        } else {
+            const durationHelp = document.getElementById('durationHelp');
+            durationHelp.textContent = ''; // Clear any error message
+	    document.getElementById('successMessage').textContent = 'Successfully Updated';
+	    alert('Successfully Updated!');
+            // Proceed with form submission
+            document.getElementById('addUpdateForm').submit();
+        }
+    }
+
+    // Check if all required fields are filled to enable the submit button
+    const formElements = document.querySelectorAll('form input, form select, form textarea');
+    formElements.forEach((element) => {
+        element.addEventListener('input', checkFormValidity);
+    });
+
+    function checkFormValidity() {
+        const isFormValid = Array.from(formElements).every((element) => element.checkValidity());
+        document.getElementById('addUpdateButton').disabled = !isFormValid;
+    }
+</script>
+{% endblock %}
+

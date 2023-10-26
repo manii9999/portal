@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+{% extends "v_updates.html" %}
+
+{% block data_content %}
+<html>
+<head>
+    <title>Capacity Changes</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 5px;
+	    font-family: Tahoma, sans-serif;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        h2 {
+            font-size: 14px;
+        }
+	.table-container {
+            max-width: 100%;
+            overflow-x: auto; /* Add horizontal scroll if needed */
+        }
+
+        /* Style for the tooltip text */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 80px;
+            background-color: #333; /* Background color for tooltip */
+            color: #fff; /* Text color for tooltip */
+            text-align: center;
+            border-radius: 3px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        /* Show the tooltip text when hovering over the icon container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+	  }
+	.icon {
+	    color: #000066;
+	}
+	    
+
+    </style>
+</head>
+<body>
+
+<h2>Shift Details</h2>
+        <div class="message">
+    {% with messages = get_flashed_messages(with_categories=false) %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</div>
+
+        <!-- Add your shift details content here -->
+    </section>
+
+    <section class="update-list">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 60px;">Date</th>
+                    <th style="width: 60px;">Shift Type</th>
+                    <th style="width: 60px;">Total Alerts</th>
+                    <th style="width: 80px;">Shift Engineers</th>
+                    <!-- Add more table headers for additional columns -->
+                    <th style="width: 10px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for update in updates %}
+                <tr>
+                    <td>
+                        {{ update.date.strftime('%d-%m-%Y') }}
+                    </td>
+                    <td>{{ update.shift_type }}</td>
+                    <td>{{ update.alerts_handled }}</td>
+                    <td>{{ update.shift_engineer }}</td>
+                    <!-- Add more columns as needed -->
+                    <td>
+                        <!-- Edit icon with tooltip -->
+                        <div class="tooltip">
+                            <a href="{{ url_for('edit_update', date=update.date, shift_type=update.shift_type) }}" class="btn">
+                                <i class="fas fa-edit icon"></i>
+                                <span class="tooltiptext">Edit</span>
+                            </a>
+                        </div>
+
+                        <!-- View icon with tooltip -->
+                        <div class="tooltip">
+                            <a href="{{ url_for('get_update', date=update.date, shift_type=update.shift_type) }}" class="btn">
+                                <i class="far fa-eye icon"></i>
+                                <span class="tooltiptext">View</span>
+                            </a>
+                        </div>
+                        <div class="tooltip">
+                            <a href="{{ url_for('email_update', date=update.date, shift_type=update.shift_type) }}" class="btn">
+                                <i class="far fa-envelope icon"></i>
+                                <span class="tooltiptext">Mail</span>
+                            </a>
+                        </div>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>
+
+{% endblock %}
+

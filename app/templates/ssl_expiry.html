@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+{% extends "ssl.html" %}
+
+{% block data_content %}
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+
+    <meta charset="UTF-8">
+    <title>SSL Certificate Expiry Dates</title>
+    <style>
+        /* Your existing CSS styles */
+
+        /* Style the floating notifications container */
+        .floating-notifications {
+            position: fixed;
+            top: 50px;
+            left: 220px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            max-height: auto;
+            overflow-y: auto;
+            width: 600px; /* Set a max width */
+            align-items: flex-start;
+        }
+        h3 {
+           font-size: 14px;
+           margin-left: 10px;
+        }
+
+        /* Style the table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            text-align: left;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            cursor: pointer; /* Add cursor style for sorting */
+        }
+
+        .message {
+            /* Your flash message styles here */
+            text-decoration: none;
+            color: #002966;
+        }
+
+        .message ul {
+            list-style: none; /* Remove bullet points */
+        }
+
+        .message li {
+            /* Additional styles for flash message list items */
+            text-decoration: none;
+        }
+
+        .status-select {
+            /* Style the select box */
+            color: #005ce6;
+            width: 100px; /* Adjust the width as needed */
+        }
+
+    </style>
+    <script>
+        $(document).ready(function() {
+            $('#websiteTable').DataTable();
+        });
+    </script>
+
+</head>
+<body>
+
+<!-- Floating notifications container -->
+<div class="floating-notifications">
+    <h3>SSL Expiry Notifications</h3>
+    <table id="websiteTable">
+        <thead>
+            <tr>
+                <th class="sorting">URL</th>
+                <th class="sorting">Expiry Date</th>
+                <th class="sorting">Jira ID</th>
+                <th class="sorting">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <div class="message">
+                {% with messages = get_flashed_messages(with_categories=false) %}
+                {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
+            </div>
+            {% for website in websites %}
+            <tr>
+                <td><strong>{{ website.name }}</strong></td>
+                <td>{{ website.expiry_date.strftime('%d-%m-%Y') }}</td>
+                <td>{{ website.jira_id }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('update_status', website_id=website.id) }}">
+                        <select name="status" class="status-select" onchange="this.form.submit()">
+                            <option value="Open" {% if website.status == 'Open' %}selected{% endif %}>Open</option>
+                            <option value="In Progress" {% if website.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                            <option value="Done" {% if website.status == 'Done' %}selected{% endif %}>Done</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+{% endblock %}
+

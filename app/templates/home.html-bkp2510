@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+{% extends "common_template.html" %}
+{% block content %}
+<html>
+<head>
+    <style>
+        /* Style for the main container */
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Style for the side menu panel */
+        .side-panel {
+            width: 200px;
+            position: fixed;
+            color: #777; /* Font color changed to grey */
+            top: 0;
+            left: 0;
+            padding: 10px 0;
+            height: 100%;
+            overflow-y: auto;
+            margin-top: 48px;
+            border-right: 1px solid #ccc;
+        }
+
+        /* Style the side menu links and boxes */
+        .side-panel a {
+            display: block;
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            color: #595959; /* Font color for side menu items */
+            text-decoration: none;
+            font-size: 14px;
+            border-bottom: 1px solid #ccc;
+            border-radius: 0 25px 25px 0;
+            transition: color 0.3s ease; /* Hover effect for font color */
+            text-align: left;
+        }
+
+        /* Hover effect for side menu links */
+        .side-panel a:hover {
+            color: #0077c8; /* Hover font color */
+        }
+                .sub-menu {
+            display: none;
+            padding: 10px;
+        }
+
+        .sub-menu a {
+            display: block;
+            padding: 10px;
+            color: #00a2e8; /* Font color for submenu items (light blue) */
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .sub-menu a:hover {
+            color: #005b9f; /* Hover font color for submenu items */
+        }
+
+        /* Container for data on the right */
+        .data-container {
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-left: 210px;
+            margin-top: 40px;
+        }
+
+        /* Remove bullet points from the ul */
+        .side-panel ul {
+            list-style: none;
+            padding: 0;
+        }
+        /* Highlight the selected menu item */
+        .side-panel a.selected-menu {
+            background: #005b9f; /* Set your desired background color */
+            color: #fff; /* Set your desired font color */
+        }
+.search-bar {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+}
+
+.search-container {
+    display: flex;
+    color: #0f3257px;
+
+}
+
+#search-input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #0f3257;
+    border-radius: 1px;
+    height: 10px;
+}
+
+#search-button {
+    background-color: #0077c8;
+    color: #fff;
+    border: none;
+    padding: 3px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.results-container {
+    display: none;
+    max-width: 200px;
+    margin-top: 10px;
+}
+
+
+
+
+
+    </style>
+</head>
+<body>
+
+            <div class="side-panel">
+        <a href="#" onclick="toggleSubMenu('add-updates-submenu', 'add-updates-link')" id="add-updates-link">Add Updates</a>
+        <div class="sub-menu" id="add-updates-submenu">
+            <a href="{{ url_for('add') }}">Add Critical Updates</a>
+            <a href="{{ url_for('add_update') }}">Add Daily Updates</a>
+            <a href="{{ url_for('add_infra_change') }}">Add Capacity Changes</a>
+        </div>
+        <a href="#" onclick="toggleSubMenu('view-updates-submenu', 'view-updates-link')" id="view-updates-link">View Updates</a>
+        <div class="sub-menu" id="view-updates-submenu">
+            <a href="{{ url_for('view_shift_updates') }}">View Shift Updates</a>
+            <a href="{{ url_for('view_updates') }}">View Updates By Date</a>
+            <a href="{{ url_for('infra_changes') }}">View Capacity Changes</a>
+        </div>
+
+        <a href="#" onclick="toggleSubMenu('critical-updates-submenu', 'critical-updates-link')" id="critical-updates-link">Critical Updates</a>
+        <div class="sub-menu" id="critical-updates-submenu">
+            <a href="{{ url_for('monthly') }}">Month Wise Issues</a>
+            <a href="{{ url_for('last_month_p0_updates') }}">Last Month Updates</a>
+            <a href="{{ url_for('last_threemonth_p0_updates') }}">Last 3 Month Updates</a>
+            <a href="{{ url_for('last_sixmonth_p0_updates') }}">Last 6 Months Updates</a>
+            <a href="{{ url_for('custom_time_range_updates') }}">Custom Range Updates</a>
+        </div>
+        <a href="#" onclick="toggleSubMenu('debug-logs-submenu', 'debug-logs-link')" id="debug-logs-link">Debug Logs</a>
+        <div class="sub-menu" id="debug-logs-submenu">
+            <a href="{{ url_for('debug') }}">Add Debug Logs</a>
+            <a href="{{ url_for('view_debug_logs') }}">View Debug Logs</a>
+        </div>
+        <a href="#" onclick="toggleSubMenu('tracker-submenu', 'tracker-link')" id="tracker-link">Tracker</a>
+        <div class="sub-menu" id="tracker-submenu">
+            <a href="{{ url_for('tracker') }}">Add Tracker</a>
+            <a href="{{ url_for('view_tracker_data') }}">View Tracker</a>
+        </div>
+        <a href="#" onclick="toggleSubMenu('command-center-submenu', 'command-center-link')" id="command-center-link">Command Center</a>
+        <div class="sub-menu" id="command-center-submenu">
+            <a href="{{ url_for('view_commands') }}">Commands</a>
+        </div>
+    </div>
+    <div class="data-container">
+                <div class="search-bar">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search by content">
+            <button id="search-button">Search</button>
+        </div>
+        <div class="results-container">
+            <!-- Search results will be displayed here -->
+        </div>
+            </div>
+            {% block data_content %}{% endblock %}
+        </div>
+
+
+    <script>
+
+     function toggleSubMenu(subMenuId, clickedLinkId) {
+        var subMenu = document.getElementById(subMenuId);
+        var clickedLink = document.getElementById(clickedLinkId);
+
+        var subMenus = document.querySelectorAll(".sub-menu");
+        var links = document.querySelectorAll(".side-panel a");
+
+        subMenus.forEach(function (menu) {
+            if (menu !== subMenu) {
+                menu.style.display = "none";
+            }
+        });
+
+        links.forEach(function (link) {
+            link.classList.remove("selected-menu");
+        });
+
+        if (subMenu.style.display === "block") {
+            subMenu.style.display = "block"; // Change to "block" to keep it open
+            clickedLink.classList.add("selected-menu");
+        } else {
+            subMenu.style.display = "block";
+            clickedLink.classList.add("selected-menu");
+        }
+    }
+
+    // Close all submenus when clicking outside the left panel
+    document.addEventListener("click", function (event) {
+        if (event.target.closest(".side-panel") === null) {
+            var subMenus = document.querySelectorAll(".sub-menu");
+            var links = document.querySelectorAll(".side-panel a");
+            subMenus.forEach(function (menu) {
+                menu.style.display = "none";
+            });
+            links.forEach(function (link) {
+                link.classList.remove("selected-menu");
+            });
+        }
+    });
+
+    // Prevent submenu items from closing the submenu
+    var submenuItems = document.querySelectorAll(".sub-menu a");
+    submenuItems.forEach(function (item) {
+        item.addEventListener("click", function (event) {
+            event.stopPropagation(); // Prevent click event propagation
+        });
+    });
+        document.addEventListener('DOMContentLoaded', function() {
+            const routeNames = [
+                'Add critical Update',
+                'View Updates',
+                'Critical Updates',
+                'Tracker',
+                'Monthly',
+                'last month',
+                'last three months',
+                'last six months',
+                'view tracker',
+                'add capacity changes',
+                'view capacity changes',
+                'commands'
+                // Add more route names as needed
+            ];
+
+            const routeUrls = [
+                '{{ url_for("add") }}',
+                '{{ url_for("view_updates") }}',
+                '{{ url_for("critical_updates") }}',
+                '{{ url_for("tracker") }}',
+                '{{ url_for("monthly") }}',
+                '{{ url_for("last_month_p0_updates") }}',
+                '{{ url_for("last_threemonth_p0_updates") }}',
+                '{{ url_for("last_sixmonth_p0_updates") }}',
+                '{{ url_for("view_tracker_data") }}',
+                '{{ url_for("add_infra_change") }}',
+                '{{ url_for("infra_changes") }}',
+                '{{ url_for("view_commands") }}'
+                // Add more route URLs as needed
+            ];
+
+            const searchInput = document.getElementById('search-input');
+            const resultsContainer = document.querySelector('.results-container');
+
+            let hideResultsTimeout; // Variable to store the timeout ID
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                resultsContainer.style.display = 'block'; // Show results container
+
+                if (!searchTerm) {
+                    resultsContainer.innerHTML = '<p>Please enter a term.</p>';
+                    hideResultsTimeout = setTimeout(hideResults, 3000); // Set a timeout to hide results
+                    return;
+                }
+
+                clearTimeout(hideResultsTimeout); // Clear the previous timeout
+                const filteredRoutes = routeNames.filter(name => name.toLowerCase().includes(searchTerm));
+                displayResults(filteredRoutes);
+            });
+
+            function displayResults(results) {
+                resultsContainer.innerHTML = '';
+
+                if (results.length === 0) {
+                    resultsContainer.innerHTML = '<p>No results found.</p>';
+                } else {
+                    results.forEach(name => {
+                        const index = routeNames.indexOf(name);
+                        if (index !== -1) {
+                            const resultItem = document.createElement('div');
+                            resultItem.textContent = name;
+                            resultItem.style.cursor = 'pointer'; // Add a pointer cursor
+                            resultItem.addEventListener('click', function() {
+                                window.location.href = routeUrls[index]; // Redirect when clicked
+                            });
+                            resultsContainer.appendChild(resultItem);
+                        }
+                    });
+                }
+            }
+
+            function hideResults() {
+                resultsContainer.style.display = 'none';
+            }
+        });
+    </script>
+
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Two-Factor Authentication</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Two-Factor Authentication</h1>
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="messages">
+                        <li>{{ messages[0] }}</li>
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <form method="POST" action="/login">
+            <div class="form-group">
+                <div class="image-message">
+                    <img class="otp-image" src="static/images/totp_authenticator_check.png" alt="MFA Image">
+                    <p>Your account is secured using multi-factor authentication (MFA). To finish signing in, please enter the 6-digit OTP below:</p>
+                </div>
+                <div class="form-group">
+                    <input type="number" class="otp-input" name="otp" required pattern="\d{6}" title="Enter a 6-digit numeric OTP" maxlength="6">
+                    <button type="submit" class="otp-button">Submit OTP</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+

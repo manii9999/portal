@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Knowledge Entry</title>
+    <!-- Include CKEditor script -->
+    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+</head>
+<body>
+    <h1>View Knowledge Entry</h1>
+    <h2>Subject: {{ entry.subject }}</h2>
+
+    <div>
+        <h3>Description</h3>
+        <p>
+            {{ entry.description }}
+            <a id="edit-description" href="{{ url_for('edit_description', entry_id=entry.id) }}" class="edit-link">Edit</a>
+        </p>
+    </div>
+</body>
+</html>
+

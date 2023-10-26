@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration Form</title>
+</head>
+<body>
+    <h2>Registration</h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="flash-{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form method="post" action="/register">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required><br>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required><br>
+
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" name="confirm_password" id="confirm_password" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required><br>
+
+        <!-- Checkbox to enable 2FA -->
+        <input type="checkbox" name="enable_2fa" id="enable_2fa">
+        <label for="enable_2fa">Enable Two-Factor Authentication (2FA)</label><br>
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
+

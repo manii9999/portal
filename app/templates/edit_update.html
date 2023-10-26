@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+{% extends "v_updates.html" %}
+{% block data_content %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <title>Edit Shift Update</title>
+    <style>
+        /* Style for the form container */
+        .form-container {
+            width: 100%;
+            padding: 5px;
+            background-color: #f5f5f5;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            margin-top: 55px;
+            font-size: 12px;
+            margin-bottom: 2px !important;
+        }
+
+        /* Style for textareas */
+        textarea {
+            width: 100%;
+            min-height: 25px; /* Set a minimum height */
+            resize: vertical;
+        }
+
+        /* Center and limit content width */
+        .container {
+            max-width: 1250px;
+            margin: 5px auto 0;
+            margin-top: 50px;
+            color: #f2f2f2;
+        }
+
+        /* Style for the Shift Details section */
+        .shift-details {
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            padding: 10px; /* Increase padding for better spacing */
+            margin-top: 20px; /* Reduce top margin */
+        }
+
+        /* Style for the Shift Details section title */
+        .shift-details h2 {
+            font-size: 14px; /* Increase font size for better readability */
+            color: #595959;
+        }
+
+        /* Style for the content within the Shift Details section */
+        .shift-details label {
+            color: #4d4d4d;
+            font-weight: bold;
+            text-align: left;
+            padding: 2px;
+            font-size: 12px;
+        }
+
+        /* Adjusting padding for the label and textarea to further reduce spacing */
+        .shift-details label, .shift-details textarea {
+            padding: 1px;
+        }
+
+        /* Style for the submit button */
+        .shift-details input[type="submit"] {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Style for the submit button on hover */
+        .shift-details input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="shift-details">
+        <h2>Edit Shift Update</h2>
+        <form method="POST">
+            <label for="date">Date:</label>
+            <textarea name="date" rows="1" cols="50" required oninput="autoExpand(this)">{{ update.date }}</textarea>
+
+            <label for="shift_type">Shift Type:</label>
+            <textarea name="shift_type" rows="1" cols="50" required oninput="autoExpand(this)">{{ update.shift_type }}</textarea>
+
+            <label for="done_in_shift">Done in Shift:</label>
+            <textarea name="done_in_shift" rows="1" cols="50" oninput="autoExpand(this)">{{ update.done_in_shift }}</textarea>
+
+            <label for="update_to_next_shift">Update to Next Shift:</label>
+            <textarea name="update_to_next_shift" rows="1" cols="50" oninput="autoExpand(this)">{{ update.update_to_next_shift }}</textarea>
+
+            <label for="alerts_handled">Alerts Handled:</label>
+            <textarea name="alerts_handled" rows="1" cols="50" oninput="autoExpand(this)">{{ update.alerts_handled }}</textarea>
+
+            <label for="actioned_alerts">Actioned Alerts:</label>
+            <textarea name="actioned_alerts" rows="1" cols="50" oninput="autoExpand(this)">{{ update.actioned_alerts }}</textarea>
+
+            <label for="manual_restarts">Manual Restarts:</label>
+            <textarea name="manual_restarts" rows="1" cols="50" oninput="autoExpand(this)">{{ update.manual_restarts }}</textarea>
+
+            <label for="tasks">Tasks:</label>
+            <textarea name="tasks" rows="1" cols="50" oninput="autoExpand(this)">{{ update.tasks }}</textarea>
+
+            <label for="resolved_tasks">Resolved Tasks:</label>
+            <textarea name="resolved_tasks" rows="1" cols="50" oninput="autoExpand(this)">{{ update.resolved_tasks }}</textarea>
+
+            <label for="closed_tasks">Closed Tasks:</label>
+            <textarea name="closed_tasks" rows="1" cols="50" oninput="autoExpand(this)">{{ update.closed_tasks }}</textarea>
+
+            <label for="dev_requests_calls">Dev Requests Calls:</label>
+            <textarea name="dev_requests_calls" rows="1" cols="50" oninput="autoExpand(this)">{{ update.dev_requests_calls }}</textarea>
+
+            <label for="dev_requests_pi_calls">Dev Requests Pi Calls:</label>
+            <textarea name="dev_requests_pi_calls" rows="1" cols="50" oninput="autoExpand(this)">{{ update.dev_requests_pi_calls }}</textarea>
+
+            <label for="dev_requests_debug_loggers">Dev Requests Debug Loggers:</label>
+            <textarea name="dev_requests_debug_loggers" rows="1" cols="50" oninput="autoExpand(this)">{{ update.dev_requests_debug_loggers }}</textarea>
+
+            <label for="dev_requests_noise">Dev Requests Noise:</label>
+            <textarea name="dev_requests_noise" rows="1" cols="50" oninput="autoExpand(this)">{{ update.dev_requests_noise }}</textarea>
+
+            <label for="dev_requests_jar_replace">Dev Requests Jar Replace:</label>
+            <textarea name="dev_requests_jar_replace" rows="1" cols="50" oninput="autoExpand(this)">{{ update.dev_requests_jar_replace }}</textarea>
+
+            <label for="dev_requests_replicas">Dev Requests Replicas:</label>
+            <textarea name="dev_requests_replicas" rows="1" cols="50" oninput="autoExpand(this)">{{ update.dev_requests_replicas }}</textarea>
+
+            <label for="dev_requests_threads">Dev Requests Threads:</label>
+            <textarea name="dev_requests_threads" rows="1" cols="50" oninput="autoExpand(this)">{{ update.dev_requests_threads }}</textarea>
+
+            <label for="db_queries_single">DB Queries Single:</label>
+            <textarea name="db_queries_single" rows="1" cols="50" oninput="autoExpand(this)">{{ update.db_queries_single }}</textarea>
+
+            <label for="db_queries_all_pods">DB Queries All Pods:</label>
+            <textarea name="db_queries_all_pods" rows="1" cols="50" oninput="autoExpand(this)">{{ update.db_queries_all_pods }}</textarea>
+
+            <label for="jira_so_tickets">Jira SO Tickets:</label>
+            <textarea name="jira_so_tickets" rows="1" cols="50" oninput="autoExpand(this)">{{ update.jira_so_tickets }}</textarea>
+
+            <label for="jira_ops_to_engg">Jira Ops to Engineering:</label>
+            <textarea name="jira_ops_to_engg" rows="1" cols="50" oninput="autoExpand(this)">{{ update.jira_ops_to_engg }}</textarea>
+
+            <label for="capacity_changes">Capacity Changes:</label>
+            <textarea name="capacity_changes" rows="1" cols="50" oninput="autoExpand(this)">{{ update.capacity_changes }}</textarea>
+
+            <label for="activity">Activity:</label>
+            <textarea name="activity" rows="1" cols="50" oninput="autoExpand(this)">{{ update.activity }}</textarea>
+
+            <label for="db_loads">DB Loads:</label>
+            <textarea name="db_loads" rows="1" cols="50" oninput="autoExpand(this)">{{ update.db_loads }}</textarea>
+
+            <label for="follow_ups">Follow Ups:</label>
+            <textarea name="follow_ups" rows="1" cols="50" oninput="autoExpand(this)">{{ update.follow_ups }}</textarea>
+
+            <label for="shift_engineer">Shift Engineers:</label>
+            <textarea name="shift_engineer" rows="1" cols="50" oninput="autoExpand(this)">{{ update.shift_engineer }}</textarea>
+
+            <input type="submit" value="Update">
+        </form>
+    </div>
+
+    <script>
+        // Function to auto-expand textarea based on content
+        function autoExpand(textarea) {
+            // Set a minimum height (adjust as needed)
+            textarea.style.minHeight = '25px';
+
+            // Calculate the new height based on the scroll height
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+    </script>
+</body>
+</html>
+{% endblock %}
+

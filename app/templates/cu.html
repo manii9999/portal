@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% extends "add.html" %}
+{% block data_content %}
+<html>
+<head>
+    <title>Add Update</title>
+    <style>
+        .container {
+            display: flex;
+        }
+
+        .menu {
+            flex: 1;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+        }
+
+        .form {
+            flex: 2;
+            padding: 20px;
+            margin-left: 200px; /* Adjust the margin to match your menu width */
+        }
+
+        form {
+            display: none;
+            flex-direction: column;
+        }
+
+        label {
+            margin: 5px 0;
+        }
+
+        input, select, textarea {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form" id="update-form">
+            <form method="POST">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+                <label for="duration">Duration (hh:mm):</label>
+                <input type="text" id="duration" name="duration" placeholder="hh:mm">
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    <option value="" disabled selected>--select--</option>
+                    <option value="P0">P0</option>
+                    <option value="P1">P1</option>
+                    <option value="OTHER">OTHER</option>
+                </select>
+                <label for="podname">POD Name:</label>
+                <select id="podname" name="podname">
+                    <option value="test1">test1</option>
+                    <option value="test2">test2</option>
+                    <!-- Add other options up to test20 -->
+                </select>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description"></textarea>
+                <label for="service_impacted">Service Impacted:</label>
+                <input type="text" id="service_impacted" name="service_impacted">
+                <label for="reported_by">Reported By:</label>
+                <input type="text" id="reported_by" name="reported_by">
+                <label for="updated_by">Updated By:</label>
+                <input type="text" id="updated_by" name="updated_by">
+                <button type="submit">Add Update</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            const form = document.getElementById("update-form");
+            form.style.display = (form.style.display === "none") ? "block" : "none";
+        }
+    </script>
+</body>
+</html>
+
+{% endblock %}

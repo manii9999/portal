@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <!-- Add this line to include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+    <!-- Common CSS styles for the header and buttons -->
+    <style>
+        /* Style for the header */
+        .header {
+            background-color: #f2f2f2;
+            color: #040720;
+            padding: 5px;
+            text-align: right;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+        }
+
+        .header-logo {
+            margin-right: auto;
+            margin-left: 10px;
+        }
+
+        /* Style for the header logo image */
+        .header-logo img {
+            width: 80px;
+            height: auto;
+        }
+
+        .header h1, .header p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* Style for the buttons */
+        .btn {
+            display: inline-block;
+            padding: px 0px;
+            background-color: #f2f2f2;
+            color: #0073e6;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+            margin-left: 5px;
+            font-size: 12px;
+        }
+
+        /* Change link color on hover */
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style for the icons within buttons */
+        .icon {
+            font-size: 12px;
+            margin-right: 2px;
+        }
+
+        /* Center and limit content width */
+        .container {
+            max-width: 1250px;
+            margin: 5px auto 0;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="static/images/logo3.png" alt="Logo">
+        </div>
+        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+            <a href="{{ url_for('add_update') }}" class="btn">
+                <i class="fas fa-plus icon"></i>
+                <span class="tooltiptext">Add Shift Update</span>
+            </a>
+            <a href="{{ url_for('view_updates') }}" class="btn">
+                <i class="far fa-eye icon"></i>
+                <span class="tooltiptext">View Shift Update</span>
+            </a>
+            <a href="{{ url_for('monthly') }}" class="btn">
+                <i class="far fa-fire icon"></i>
+                <span class="tooltiptext">Critical Updates</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Content container -->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div> <!-- End of content container -->
+
+    <footer>
+        <p class="test-text">Test <span class="year-text">© 2023</span></p>
+    </footer>
+</body>
+</html>
+

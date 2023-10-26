@@ -1,0 +1,146 @@
+{% extends "t_updates.html" %}
+
+{% block data_content %}
+<style>
+    h2 {
+        font-size: 14px;
+    }
+    .error-message {
+        color: red;
+        margin-top: -20px;
+        padding: 5px;
+    }
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .form-label {
+        width: 150px;
+        text-align: right;
+        padding-right: 10px;
+        font-size: 12px;
+    }
+    .form-field {
+        flex: 1;
+    }
+    button {
+        margin-left: 170px;
+        margin-top: 10px;
+    }
+    select {
+        font-size: 12px;
+    }
+    .success-message {
+        color: green;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+</style>
+<h2>Tracker Entry</h2>
+<form method="POST">
+    <div class="form-row">
+        <div class="form-label"><label for="date">Date:</label></div>
+        <div class="form-field">
+            <input type="date" id="date" name="date" required value="{{ selected_date|default('yyyy-MM-dd') }}" max="{{ current_date }}">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-label"><label for="shift">Shift Type:</label></div>
+        <div class="form-field">
+            <select name="shift" required>
+                <option value="MS">Morning</option>
+                <option value="AS">Afternoon</option>
+                <option value="NS">Night</option>
+            </select>
+        </div>
+    </div>
+    {% if existing_record %}
+    <div class="form-row">
+        <div class="form-label"><label for="count">Current Count:</label></div>
+        <div class="form-field">
+            <input type="number" id="count" name="count" value="{{ existing_record.count }}" readonly>
+        </div>
+    </div>
+    {% else %}
+    <div class="form-row">
+        <div class="form-label"><label for="count">Alerts Count:</label></div>
+        <div class="form-field">
+            <input type="number" id="count" name="count" required min="0">
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="form-row">
+        <div class="form-label"><label for="pod">POD:</label></div>
+        <div class="form-field">
+            <select id="pod" name="pod">
+                <option value="" disabled selected>--select--</option>
+                <option value="test1">test1</option>
+                <option value="test2">test2</option>
+                <option value="test3">test3</option>
+                <option value="test4">test4</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-label"><label for="application">Application:</label></div>
+        <div class="form-field">
+            <select id="application" name="application">
+                <option value="" disabled selected>--select--</option>
+                <option value="APP">APP</option>
+                <option value="API">API</option>
+                <option value="CN">CN</option>
+                <option value="JP">JP</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-label"><label for="action_summary">Action Summary:</label></div>
+        <div class="form-field">
+            <select id="action_summary" name="action_summary">
+                <option value="" disabled selected>--select--</option>
+                <option value="Restarted">Restarted</option>
+                <option value="Rebooted">Rebooted</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-label"><label for="action">Action:</label></div>
+        <div class="form-field">
+            <select id="action" name="automation_manual">
+                <option value="" disabled selected>--select--</option>
+                <option value="Automation">Automation</option>
+                <option value="Manual">Manual</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-label"><label for="description">Description:</label></div>
+        <div class="form-field">
+            <select id="description" name="description">
+                <option value="" disabled selected>--select--</option>
+                <option value="Physical memory">Physical memory</option>
+                <option value="Out of memory">Out of memory</option>
+                <option value="Agent offline">Agent offline</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-label"><label for="vm_host">VM/Host:</label></div>
+        <div class="form-field">
+            <input type="text" id="vm_host" name="vm_host">
+        </div>
+    </div>
+
+    <button type="submit">Submit</button>
+</form>
+</div>
+
+{% endblock %}
+

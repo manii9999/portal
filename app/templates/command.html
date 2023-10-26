@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Commands</title>
+</head>
+<body>
+    <h1>Commands</h1>
+    <ul>
+        {% for entry in command_entries %}
+        <li>Category: {{ entry.category }}, Command: {{ entry.command }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+

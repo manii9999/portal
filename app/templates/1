@@ -1,0 +1,114 @@
+{% extends "crit_template.html" %}
+
+{% block data_content %}
+<style>
+    .error-message {
+        color: red;
+        margin-top: -20px;
+        padding: 5px;
+    }
+    .form-label {
+        display: inline-block;
+        width: 150px;
+        text-align: right;
+        padding-right: 10px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+    }
+    button {
+	align-items: center;
+</style>
+
+<div class="form">
+    <h2>Add Critical Update</h2>
+    <form method="POST" id="addUpdateForm">
+        <label class="form-label" for="date">Date:</label>
+        <input type="date" id="date" name="date" required readonly><br>
+
+        <label class="form-label" for="hours">Duration:</label>
+        <select id="hours" name="hours" required>
+            <option value="" disabled selected>-- hh --</option>
+            {% for h in range(24) %}
+                <option value="{{ "%02d"|format(h) }}">{{ "%02d"|format(h) }}</option>
+            {% endfor %}
+        </select>
+        <span>:</span>
+        <select id="minutes" name="minutes" required>
+            <option value="" disabled selected>-- mm --</option>
+            {% for m in range(60) %}
+                <option value="{{ "%02d"|format(m) }}">{{ "%02d"|format(m) }}</option>
+            {% endfor %}
+        </select>
+        <div class="error-message" id="durationHelp"></div><br>
+
+        <label class="form-label" for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="" disabled selected>--select--</option>
+            <option value="P0">P0</option>
+            <option value="P1">P1</option>
+            <option value="OTHER">OTHER</option>
+        </select><br>
+
+        <label class="form-label" for="podname">POD Name:</label>
+        <select id="podname" name="podname" required>
+            <option value="" disabled selected>--select--</option>
+            <option value="test1">test1</option>
+            <option value="test2">test2</option>
+            <!-- Add other options up to test20 -->
+        </select><br>
+
+        <label class="form-label" for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br>
+
+        <label class="form-label" for="service_impacted">Service Impacted:</label>
+        <input type="text" id="service_impacted" name="service_impacted" required><br>
+
+        <label class="form-label" for="reported_by">Reported By:</label>
+        <select id="reported_by" name="reported_by" required>
+            <option value="" disabled selected>--select--</option>
+            <option value="customer">Customer</option>
+            <option value="engineering">Engineering</option>
+            <option value="saasops">SaaS Ops</option>
+            <option value="others">Others</option>
+        </select><br>
+
+        <button type="button" id="addUpdateButton" onclick="validateDuration()" disabled>Add Update</button>
+    </form>
+</div>
+
+<script>
+    // JavaScript to set the date input to the current date
+    window.onload = function () {
+        let currentDate = new Date().toISOString().split('T')[0];
+        document.getElementById('date').value = currentDate;
+    };
+
+    // Function to validate the 'Duration' field format (hh:mm)
+    function validateDuration() {
+        const hours = document.getElementById('hours').value;
+        const minutes = document.getElementById('minutes').value;
+
+        if (!hours || !minutes) {
+            const durationHelp = document.getElementById('durationHelp');
+            durationHelp.textContent = 'Please select hours and minutes.';
+        } else {
+            const durationHelp = document.getElementById('durationHelp');
+            durationHelp.textContent = ''; // Clear any error message
+            // Proceed with form submission
+            document.getElementById('addUpdateForm').submit();
+        }
+    }
+
+    // Check if all required fields are filled to enable the submit button
+    const formElements = document.querySelectorAll('form input, form select, form textarea');
+    formElements.forEach((element) => {
+        element.addEventListener('input', checkFormValidity);
+    });
+
+    function checkFormValidity() {
+        const isFormValid = Array.from(formElements).every((element) => element.checkValidity());
+        document.getElementById('addUpdateButton').disabled = !isFormValid;
+    }
+</script>
+{% endblock %}
+

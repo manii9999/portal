@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+{% extends "t_updates.html" %}
+{% block data_content %}
+<html>
+<head>
+    <title>View Tracker Data</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        /* Your CSS styles go here */
+
+        /* Style for the table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+	    font-family: Tahoma, sans-serif;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+	    font-size: 12px;
+	    font-family: Tahoma, sans-serif;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Style for the table header */
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Style for the table rows */
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+	h2 {
+	    font-size: 14px;
+	}
+
+        /* Style for the Edit and Delete buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-button, .delete-button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-button:hover, .delete-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style for the total record count */
+        .total-records {
+            font-size: 14px;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        /* Rest of your CSS styles */
+    </style>
+</head>
+<body>
+<section class="shift-details">
+    <h2>View Tracker Data</h2>
+    <!-- Display the total record count -->
+    <p class="total-records">Total Records: {{ tracker_data|length }}</p>
+</section>
+
+<!-- Table to display tracker data -->
+<!-- Table to display tracker data -->
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Shift</th>
+            <th>Count</th>
+            <th>POD</th>
+            <th>VM/Host</th>
+            <th>Description</th>
+            <th>Application</th>
+            <th>Action Summary</th>
+            <th>Action</th>
+            <th>Shift Engineer</th>
+	    <!--        <th>Actions</th>   -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in tracker_data %}
+        <tr>
+	    <td>{{ record.date }}</td>
+            <td>{{ record.shift }}</td>
+            <td>{{ record.count }}</td>
+            <td>{{ record.pod }}</td>
+            <td>{{ record.vm_host }}</td>
+            <td>{{ record.description }}</td>
+            <td>{{ record.application }}</td>
+            <td>{{ record.action_summary }}</td>
+            <td>{{ record.automation_manual }}</td>
+            <td>{{ record.shift_engineer }}</td>
+
+         <!--   <td class="action-buttons">
+                <button class="edit-button" onclick="editRecord('{{ record[0] }}')">Edit</button>
+                <button class="delete-button" onclick="deleteRecord('{{ record[0] }}')">Delete</button>
+	 </td>  -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    // JavaScript functions for handling edit and delete actions
+    function editRecord(recordId) {
+        // Implement your edit record logic here
+        // You can redirect to an edit page or show a modal for editing
+        console.log('Edit Record: ' + recordId);
+    }
+
+    function deleteRecord(recordId) {
+        // Implement your delete record logic here
+        // You can confirm the deletion and then perform the delete operation
+        console.log('Delete Record: ' + recordId);
+    }
+</script>
+</body>
+</html>
+
+{% endblock %}
+

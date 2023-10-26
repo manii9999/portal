@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <!-- Add this line to include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="static/footer_styles.css">
+
+
+    <!-- Common CSS styles for the header and buttons -->
+    <style>
+        /* Style for the header */
+        .header {
+            background: linear-gradient(107.74deg, #0077c8 -13.29%, #0077c8 147.42%);
+	    font-family: Tahoma, sans-serif;
+            color: #040720;
+            padding: 5px;
+            box-shadow: -5px 0 5px rgba(0, 0, 0, 0.1), 5px 0 5px rgba(0, 0, 0, 0.1);
+            text-align: right;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            border-bottom: none;
+        }
+
+        .header-logo {
+            margin-right: auto;
+            margin-left: 10px;
+        }
+
+        /* Style for the header logo image */
+        .header-logo img {
+            width: 80px;
+            height: 30px;
+            opacity: 0.7;
+            background-color: transparent;
+        }
+        .transparent-background {
+            background-color: transparent;
+        }
+
+        .header h1, .header p {
+            margin: 0;
+            font-size: 16px;
+        }
+        /* Style for the avatar logo image */
+        .avatar-logo img {
+            width: 40px;
+            height: 30px;
+            opacity: 0.7;
+            background-color: transparent;
+        }
+
+
+        /* Style for the buttons */
+        .btn {
+            display: inline-block;
+            padding: 3px 2px;
+	    color: #ffffff;
+            text-decoration: none;
+            border-radius: 3px;
+	    font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-left: 5px;
+            font-size: 12px;
+	 /*   font-family: Copperplate, "Copperplate Gothic Light", fantasy, Arial, sans-serif;*/
+	    font-family: Tahoma, sans-serif;
+        }
+
+        /* Change link color on hover */
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style for the icons within buttons */
+        .icon {
+            font-size: 12px;
+            margin-right: 2px;
+        }
+                /* Style for the footer */
+        footer {
+            background-color: #f2f2f2;
+            padding: 2px;
+            text-align: left;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+        }
+
+        footer p {
+            margin: 5px;
+            padding-left: 5px;
+        }
+
+        footer .test-text {
+            color: #0073e6;
+            font-family: "Open Sans", sans-serif;
+            font-size: 10px;
+        }
+
+        footer .year-text {
+            color: #595959;
+            font-family: "Open Sans", sans-serif;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+                <a href="/">
+            <img src="static/images/logo3.png" alt="Logo">
+            </a>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+           <a href="{{ url_for('shift_updates') }}" class="btn">
+                <span class="tooltiptext">Home</span>
+            </a>
+           <a href="{{ url_for('c_updates') }}" class="btn">
+                <span class="tooltiptext">Add Updates</span>
+            </a>
+             <a href="{{ url_for('v_updates') }}" class="btn">
+                <span class="tooltiptext">View Updates</span>
+            </a>
+           <a href="{{ url_for('critical_updates') }}" class="btn">
+                <span class="tooltiptext">Critical Updates</span>
+            </a>
+             <a href="{{ url_for('t_updates') }}" class="btn">
+                <span class="tooltiptext">Tracker</span>
+            </a>
+
+
+
+             <a href="{{ url_for('shift_updates') }}" class="btn">
+                <span class="tooltiptext">Downloads</span>
+            </a>
+
+
+
+               <div class="avatar-logo">
+                    <a href="{{ url_for('user_profile') }}" class="avatar-link">
+                    <img src="static/images/avtr.png" alt="Avatar">
+                     </a>
+               </div>
+        </div>
+    </div>
+     <div class="container">
+             {% block content %} {% endblock %}
+     </div>
+</body>
+</html>
+

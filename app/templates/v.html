@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Critical Updates</title>
+</head>
+<body>
+    <h1>Critical Updates</h1>
+    <a href="/add">Add Update</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Duration</th>
+                <th>Category</th>
+                <th>POD Name</th>
+                <th>Description</th>
+                <th>Service Impacted</th>
+                <th>Reported By</th>
+                <th>Updated By</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for update in updates %}
+                <tr>
+                    <td>{{ update.date }}</td>
+                    <td>{{ update.duration }}</td>
+                    <td>{{ update.category }}</td>
+                    <td>{{ update.podname }}</td>
+                    <td>{{ update.description }}</td>
+                    <td>{{ update.service_impacted }}</td>
+                    <td>{{ update.reported_by }}</td>
+                    <td>{{ update.updated_by }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+

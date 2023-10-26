@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Command Center</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="side-panel">
+        <h3>Categories</h3>
+        <ul id="categories-list">
+            <!-- Categories will be dynamically loaded here -->
+        </ul>
+    </div>
+    <div class="main-content">
+        <h1>Command Center</h1>
+        <div id="commands-container">
+            <!-- Command data for the selected category will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        // Fetch categories from the server and populate the side panel
+        function loadCategories() {
+            fetch('/categories')
+                .then(response => response.json())
+                .then(data => {
+                    const categoriesList = document.getElementById('categories-list');
+                    categoriesList.innerHTML = '';
+
+                    data.categories.forEach(category => {
+                        const li = document.createElement('li');
+                        li.textContent = category;
+                        li.addEventListener('click', () => loadCommands(category));
+                        categoriesList.appendChild(li);
+                    });
+
+                    // Load the first category by default
+                    if (data.categories.length > 0) {
+                        loadCommands(data.categories[0]);
+                    }
+                });
+        }
+
+        // Fetch commands based on the selected category
+        function loadCommands(category) {
+            fetch(`/commands?category=${category}`)
+                .then(response => response.json())
+                .then(data => {
+                    const commandsContainer = document.getElementById('commands-container');
+                    commandsContainer.innerHTML = '';
+
+                    data.commands.forEach(command => {
+                        const commandItem = document.createElement('div');
+                        commandItem.className = 'command-item';
+                        commandItem.innerHTML = `<h3>${command.command}</h3><p>${command.description}</p>`;
+                        commandsContainer.appendChild(commandItem);
+                    });
+                });
+        }
+
+        // Initial loading of categories
+        loadCategories();
+    </script>
+</body>
+</html>
+

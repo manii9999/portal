@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+{% extends "common_template.html" %}
+{% block content %}
+
+<html>
+<head>
+    <title>Capacity Changes</title>
+    <style>
+        .container {
+            display: flex;
+	    height: 100vh;
+        }
+
+        .left-panel {
+	    position: fixed;
+            width: 250px;
+	    font-family: Tahoma, sans-serif;
+            background-color: #f2f2f2;
+            padding: 10px;
+	    margin-top: 50px;
+	    overflow-y: auto;
+	    height: 100%;
+        }
+	.filter-section {
+	    display: flex;
+	    flex-direction: column;
+	    height: 100%; /* Take full height of the left panel */
+	}
+
+        .right-panel {
+            flex: 1;
+	    font-family: Tahoma, sans-serif;
+            padding: 10px;
+	    margin-top: 50px;
+	    margin-left: 280px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 950px;
+        }
+	.add-button {
+        	text-align: right;
+        	margin-right: 20px; /* Add margin to separate it from the right panel */
+		font-weight: bold;
+		margin-bottom: 10px;
+    	}
+
+        .add-button a {
+        	text-decoration: none; /* Remove underline */
+        	color: #0066cc; /* Change link color to black */
+    	}
+
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+            font-size: 12px;
+        }
+	th, td a {
+	    text-decoration: none;
+	    font-family: Tahoma, sans-serif;
+	}
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        h2 {
+            font-size: 14px;
+        }
+
+        .category-button {
+            display: block;
+            margin: 5px 0;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+	button {
+	    margin-top: 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Left Panel for Filtering -->
+        <div class="left-panel">
+            <h3>Categories</h3>
+            <button class="category-button" onclick="filterByCategory('All')">All</button>
+            <button class="category-button" onclick="filterByCategory('test1')">test1</button>
+            <button class="category-button" onclick="filterByCategory('test2')">test2</button>
+            <button class="category-button" onclick="filterByCategory('test3')">test3</button>
+            <button class="category-button" onclick="filterByCategory('test4')">test4</button>
+            <!-- Add more buttons here for each category -->
+	        <form method="post">
+        <label for="filter_usage">For:</label>
+        <input type="text" id="filter_usage" name="usage">
+        <button type="submit">Apply Filters</button>
+    <button type="submit" name="clear_filters" value="1">Clear Filters</button>
+    </form>
+        </div>
+
+        <!-- Right Panel for Data Table -->
+        <div class="right-panel">
+            <div class="add-button">
+                <a href="/add_command">ADD</a> <!-- "ADD" link on the right side above the table -->
+            </div>
+            <table>
+                <tr>
+                    <th>Category</th>
+                    <th>Usage</th>
+                    <th>Command</th>
+                    <th>Edit</th>
+                </tr>
+                {% for command in commands %}
+                <tr>
+                    <td>{{ command.category }}</td>
+                    <td>{{ command.usage }}</td>
+                    <td>
+                        {% for line in command.command.split('\n') %}
+                            {{ line }}<br>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="/edit_command/{{ command.id }}" span style="font-size: 18px;">✎</span></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function filterByCategory(category) {
+            var table = document.querySelector("table");
+            var rows = table.getElementsByTagName("tr");
+            for (var i = 1; i < rows.length; i++) {
+                var row = rows[i];
+                var categoryCell = row.getElementsByTagName("td")[0];
+                if (category === "All" || categoryCell.innerText === category) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        }
+	function clearFilters() {
+            var table = document.querySelector("table");
+            var rows = table.getElementsByTagName("tr");
+            for (var i = 1; i < rows.length; i++) {
+                rows[i].style.display = "";
+            }
+            document.getElementById("filter_usage").value = ""; // Clear the usage filter
+        }
+
+    </script>
+</body>
+</html>
+{% endblock %}

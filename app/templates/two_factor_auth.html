@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Two-Factor Authentication</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Two-Factor Authentication</h1>
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="messages">
+                        <li>{{ messages[0] }}</li>
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <form method="POST" action="/two_factor_auth">
+            <div class="form-group">
+                <label for="otp">OTP:</label>
+                <input type="text" name="otp" required>
+            </div>
+            <button type="submit">Submit OTP</button>
+        </form>
+    </div>
+</body>
+</html>
+

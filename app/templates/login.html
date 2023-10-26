@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/static/images/loginimg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+	   }
+        .container {
+            background-color: rgba(255, 255, 255, 0); /* Transparent background */
+            max-width: 350px;
+	    color: #4ddbff;
+	    text-align: left;
+            padding: 20px;
+            border-radius: 0px;
+            box-shadow: 0 0 0px rgba(0, 0, 0, 0.2);
+            margin-right: 30px;
+            border-left: 1px solid #ccc;
+
+
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        .image-message {
+            text-align: left;
+            margin-top: 10px;
+            color: #ffffff;
+        }
+        .otp-input {
+            width: 40%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            margin: 5px 0;
+        }
+
+        /* Custom styling for the login container */
+        .container h3 {
+            color: #ffffff; /* Title color */
+            font-size: 14px;
+        }
+        .container h2 {
+            color: #ffffff; /* Title color */
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 30px;
+
+        }
+        .container label {
+            color: #ffffff; /* Label color */
+	    text-align: left;
+	    font-size: 12px;
+        }
+        .container button {
+	    background: linear-gradient(107.74deg, #0077c8 -13.29%, #7cefff 147.42%);
+            color: #fff; /* Button text color */
+            border: 1px solid #fff !important;
+            padding: 0 24px;
+	    height: 36px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+	    color: #ffffff;
+	    font-size: 14px !important;
+        }
+        .container button:hover {
+            background-color: #0056b3; /* Button background color on hover */
+        }
+        .otp-image {
+            float: left;
+            margin-right: 10px;
+            height: 200px;
+        }
+        input[type="text"] {
+            width: 60%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin: 5px 0;
+        }
+
+        /* Style for password input */
+        input[type="password"] {
+            width: 60%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+
+        /* Style for number input */
+        input[type="cust-password"] {
+            width: 60%;
+            padding: 8px;
+            border: 3px solid #ccc;
+            border-radius: 3px;
+            margin: 5px 0;
+        }
+
+        /* Style for button */
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+	    border-radius: 20px;
+        }
+
+        /* Style for button on hover */
+        button:hover {
+            background-color: #0056b3;
+        }
+	.message {
+    /* Your flash message styles here */
+	    text-decoration: none;
+	}
+
+	.message ul {
+	    list-style: none; /* Remove bullet points */
+	}
+
+	.message li {
+    /* Additional styles for flash message list items */
+	    text-decoration: none;
+	}
+
+
+
+
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <h2>TestING</h2>
+        <h3>Please Login</h3>
+        <div class="message">
+    {% with messages = get_flashed_messages(with_categories=false) %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</div>
+
+        <form method="POST" action="/login">
+		{% if not authenticated %}
+	        <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" required>
+                </div>
+		{% endif %}
+                {% if show_otp %}
+                <div class="image-message">
+                    <img class="otp-image" src="static/images/totp_authenticator_check.png" alt="MFA Image">
+                    <p>Your account is secured using multi-factor authentication (MFA). To finish signing in, please enter the 6-digit OTP below:</p>
+                    <div class="form-group">
+                  <input type="password" class="otp-input" name="otp" required pattern="\d{6}" title="Enter a 6-digit numeric OTP" maxlength="6">
+                  <button type="submit" class="otp-button">Submit OTP</button>
+                    </div>
+                </div>
+		  <input type="text" name="username" value="{{ session['entered_username'] }}" style="display: none;">
+                <input type="password" name="password" value="{{ session['entered_password'] }}" style="display: none;">
+
+            {% else %}
+                <button type="submit">Login</button>
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>
+
+

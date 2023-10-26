@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+{% extends "common_template.html" %}
+{% block content %}
+<html>
+<head>
+    <style>
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+        }
+	body {
+	    background: linear-gradient(107.74deg, #0f2862, #091f36, #4f5f76 147.42%);
+            background-size: cover;
+            padding: 0;
+            margin-top: 100px;
+        }
+	.user-container {
+	    width: 300px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            padding: 5px;
+            float: right; /* Align the snippet to the right */
+	    height: 400px;
+	}
+
+
+
+        .user-avatar {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+        }
+
+        .user-avatar img {
+            width: 100px;
+            height: 100px;
+            border-radius: 5%;
+	    
+        }
+
+        .user-username {
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .user-actions {
+	    font-size: 14px;
+        }
+
+
+        .user-actions p {
+            font-size: 14px;
+        }
+
+        .user-actions a {
+            display: block;
+            text-align: center;
+	    padding: 10px;
+	    background: linear-gradient(107.74deg, #0077c8 -13.29%, #7cefff 147.42%);
+            color: #ffffff;
+	    font-weight: bold; 
+	    text-decoration: none;
+	    height: 20px;
+	    margin: 20px;
+            border-radius: 10px;
+	    font-size: 14px !important;
+	    width: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="user-container">
+        <div class="user-avatar">
+                <img src="static/images/avtr.png" alt="Avatar">
+        </div>
+        <div class="user-username">
+            <h3>{{ current_user.username }}</h3>
+        </div>
+        <div class="user-actions">
+            <a href="{{ url_for('account_details') }}">Account Details</a>
+
+            <a href="{{ url_for('change_password') }}">Change Password</a>
+
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

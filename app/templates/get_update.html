@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+{% extends "v_updates.html" %}
+
+{% block data_content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Updates Portal</title>
+    <!-- Add this line to include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+    <!-- CSS styles for the header, buttons, and table -->
+    <style>
+
+        .table-container {
+            max-width: 100%; /* Set the maximum width to 100% */
+            overflow-x: auto; /* Add horizontal scroll if needed */
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            color: var(--color-grey-600);
+            font-size: 12px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+
+        /* Center and limit content width */
+        .container {
+            max-width: 1250px;
+            margin: 5px auto 0;
+	    color: #f2f2f2;
+        }
+
+        /* Style for the Shift Details section */
+        .shift-details {
+            background-color: #f7f7f7;
+	    width: 100%;
+            border: 1px solid #ddd;
+            padding: 5px;
+	    margin-bottom: 20px;
+        }
+
+        /* Style for the Shift Details section title */
+        .shift-details h2 {
+            font-size: 12px;
+            margin-bottom: 2px;
+            margin-top: 2px;
+            color: #595959;
+        }
+
+        /* Style for the content within the Shift Details section */
+        .shift-details p {
+            font-size: 12px;
+            line-height: 1.0;
+            color: #262626;
+	    margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 12px;
+            color: #0000ff;
+        }
+
+        .label {
+            display: block; /* Display labels as block elements, one below the other */
+            font-weight: bold; /* Make labels bold */
+            margin-bottom: 0px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        label, p {
+            font-family: 'Your Custom Font', sans-serif; /* Replace 'Your Custom Font' with the actual font name you     want to use */
+        }
+        p {
+            font-size: 14px; /* Adjust the font size as needed */
+            line-height: 1.25; /* Adjust the line height for spacing */
+            color: #333; /* Text color */
+            margin: 0; /* Remove default margin to avoid extra spacing */
+            margin-top: 7px;
+            margin-bottom: 2px;
+            padding: 2; /* Remove default padding to avoid extra spacing */
+
+	}
+
+</style>
+</head>
+<body>
+            <div class="container">
+        <!-- Rest of your HTML content goes here -->
+
+        <section class="shift-details">
+        <h2 style="font-size: 12px;">Shift Details</h2>
+        <form method="GET">
+            <!-- Rest of your form elements -->
+            <!-- ... -->
+
+            <!-- Display Date and Shift Type together with bold labels -->
+            <p><strong>Date:</strong> {{ update.date }} <strong>Shift Type:</strong> {{ update.shift_type }}</p>
+
+            <p class="label">P0 Updates:</p>
+            <p>{{ update.p0_updates }}</p>
+
+            <p class="label">P1 Updates:</p>
+            <p>{{ update.p1_updates }}</p>
+
+            <p class="label">Done in Shift:</p>
+            <p>{{ update.done_in_shift }}</p>
+
+            <p class="label">Update to Next Shift:</p>
+            <p>{{ update.update_to_next_shift }}</p>
+
+            <p class="label">Alerts Handled:</p>
+            <p>{{ update.alerts_handled }}</p>
+
+            <p class="label">Actioned Alerts:</p>
+            <p>{{ update.actioned_alerts }}</p>
+
+            <p class="label">Manual Restarts:</p>
+            <p>{{ update.manual_restarts }}</p>
+
+            <p class="label">Tasks:</p>
+            <p>{{ update.tasks }}</p>
+
+            <p class="label">Resolved Tasks:</p>
+            <p>{{ update.resolved_tasks }}</p>
+
+            <p class="label">Closed Tasks:</p>
+            <p>{{ update.closed_tasks }}</p>
+
+            <p class="label">Dev Requests Calls:</p>
+            <p>{{ update.dev_requests_calls }}</p>
+
+            <p class="label">Dev Requests PI Calls:</p>
+            <p>{{ update.dev_requests_pi_calls }}</p>
+
+            <p class="label">Dev Requests Debug Loggers:</p>
+            <p>{{ update.dev_requests_debug_loggers }}</p>
+
+            <p class="label">Dev Requests Noise:</p>
+            <p>{{ update.dev_requests_noise }}</p>
+
+            <p class="label">Dev Requests Jar Replace:</p>
+            <p>{{ update.dev_requests_jar_replace }}</p>
+
+            <p class="label">Dev Requests Replicas:</p>
+            <p>{{ update.dev_requests_replicas }}</p>
+
+            <p class="label">Dev Requests Threads:</p>
+            <p>{{ update.dev_requests_threads }}</p>
+
+            <p class="label">DB Queries Single:</p>
+            <p>{{ update.db_queries_single }}</p>
+
+            <p class="label">DB Queries All Pods:</p>
+            <p>{{ update.db_queries_all_pods }}</p>
+
+            <p class="label">JIRA SO Tickets:</p>
+            <p>{{ update.jira_so_tickets }}</p>
+
+            <p class="label">JIRA Ops to Engg:</p>
+            <p>{{ update.jira_ops_to_engg }}</p>
+
+            <p class="label">Capacity Changes:</p>
+            <p>{{ update.capacity_changes }}</p>
+
+            <p class="label">Activity:</p>
+            <p>{{ update.activity }}</p>
+
+            <p class="label">DB Loads:</p>
+            <p>{{ update.db_loads }}</p>
+
+            <p class="label">Follow Ups:</p>
+            <p>{{ update.follow_ups }}</p>
+
+            <p class="label">Shift Engineer:</p>
+            <p>{{ update.shift_engineer }}</p>
+        </form>
+    </div>
+</body>
+</html>
+{% endblock %}

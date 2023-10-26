@@ -1,0 +1,31 @@
+<!-- base.html -->
+<!DOCTYPE html>
+{% extends "common_template.html" %}
+{% block content %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }}</title>
+    <!-- Include your common stylesheets here -->
+    <link rel="stylesheet" href="path/to/your-common-styles.css">
+    <link rel="stylesheet" href="static/search-bar.css">
+
+</head>
+<body>
+    <div class="header">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search Routes by Name">
+            <button id="search-button">Search</button>
+        </div>
+        <div class="results-container">
+            <!-- Search results will be displayed here -->
+        </div>
+        <!-- Rest of your header content -->
+    </div>
+    <!-- Rest of your page content -->
+</body>
+</html>
+{% endblock %}
+

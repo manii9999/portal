@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+{% extends "common_template.html" %}
+{% block content %}
+
+<html>
+<head>
+    <!-- Add your CSS styles and any necessary external links here -->
+    <style>
+        /* Style for the main container */
+        .container {
+            display: flex;
+            background-color: #f5f5f5;
+            height: 100vh;
+        }
+
+        /* Style for the side menu panel */
+        .side-panel {
+            width: 150px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            box-shadow: -3px 0 5px rgba(0, 0, 0, 0.1), 3px 0 5px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            overflow-y: auto;
+            margin-top: 48px;
+        }
+
+        /* Style the side menu links and boxes */
+        .side-panel a {
+            color: #000066;
+            text-decoration: none;
+	    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: block;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover effect for side menu links */
+        .side-panel a:hover {
+            text-decoration: underline;
+        }
+
+        /* Container for data on the right */
+        .data-container {
+            padding: 10px;
+            box-shadow: -3px 0 5px rgba(0, 0, 0, 0.1), 3px 0 5px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-left: 185px;
+            margin-top: 40px;
+	    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+
+        /* Remove bullet points from the ul */
+        .side-panel ul {
+            list-style: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+        <!-- Side menu panel on the left -->
+        <div class="side-panel">
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('view_shift_updates') }}">View Shift Updates</a></li>
+                    <li><a href="{{ url_for('view_updates') }}">View Updates By Date</a></li>
+                    <li><a href="{{ url_for('infra_changes') }}">View Capacity Changes</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Container for data on the right -->
+        <div class="data-container">
+            {% block data_content %}{% endblock %}
+        </div>
+    </body>
+</html>
+{% endblock %}
+

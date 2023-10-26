@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+{% extends "common_template.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(107.74deg, #0f2862, #091f36, #4f5f76 147.42%);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .profile-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            text-align: center;
+        }
+
+        .details {
+            padding: 10px;
+        }
+
+        .details p {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .edit-link {
+            color: #0077c8;
+            text-decoration: none;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .back-link .icon {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <h1>My Profile</h1>
+        <div class="avatar">
+            <!-- Add content for the user avatar here -->
+        </div>
+        <div class="details">
+            <p><strong>Name:</strong> <span id="name">{{ current_user.name }}</span> <a class="edit-link" id="edit-name" onclick="editName()">Edit</a></p>
+	    <p><strong>Email:</strong> {{ email }}</p>
+            <p><strong>Username:</strong> {{ current_user.username }}</p>
+	    <p><strong>Login Time:</strong> {{ login_time.strftime('%d-%m-%Y %H:%M:%S') }}</p>
+	    <p><strong>2FA Enabled:</strong>
+   		 {% if current_user.is_2fa_enabled %}
+        			Yes
+    		{% else %}
+        			No
+    		{% endif %}
+		</p>
+
+        </div>
+    </div>
+    <div class="back-link">
+        <a href="{{ url_for('user_profile') }}">
+            <div class="icon"><i class="fas fa-arrow-left"></i></div>
+            <div>Back</div>
+        </a>
+    </div>
+
+    <script>
+        function editName() {
+            const nameElement = document.getElementById('name');
+            const name = nameElement.innerText;
+            nameElement.innerHTML = `<input type="text" id="editNameInput" value="${name}">`;
+            const editNameLink = document.getElementById('edit-name');
+            editNameLink.innerText = 'Save';
+            editNameLink.onclick = saveName;
+        }
+
+        function saveName() {
+            const nameInput = document.getElementById('editNameInput');
+            const nameElement = document.getElementById('name');
+            const newName = nameInput.value;
+            nameElement.innerText = newName;
+            const editNameLink = document.getElementById('edit-name');
+            editNameLink.innerText = 'Edit';
+            editNameLink.onclick = editName;
+        }
+    </script>
+</body>
+</html>
+{% endblock %}
+

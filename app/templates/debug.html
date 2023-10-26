@@ -1,0 +1,74 @@
+{% extends "d_updates.html" %}
+
+{% block data_content %}
+<link rel="stylesheet" href="static/button.css">
+<style>
+    h2 {
+        font-size: 14px;
+	font-family: Tahoma, sans-serif;
+    }
+    .error-message {
+        color: red;
+        margin-top: -20px;
+        padding: 5px;
+    }
+    .form-label {
+        display: inline-block;
+	font-family: Tahoma, sans-serif;
+        width: 150px;
+        text-align: right;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-size: 12px;
+        margin-bottom: 10px; /* Added margin-bottom for spacing */
+    }
+    select {
+        font-size: 12px;
+    }
+    .success-message {
+        color: green;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+</style>
+<div class="form">
+    <h2>Add Debug Log</h2>
+    <form method="post" action="/add_debug_log">
+        <label for="date" class="form-label">Date:</label>
+        <input type="date" id="date" name="date" required>
+        <br>
+        <label for="pod_name" class="form-label">Pod Name:</label>
+        <select id="pod_name" name="pod_name" required>
+            <option value="Pod 1">Pod 1</option>
+            <option value="Pod 2">Pod 2</option>
+            <option value="Pod 3">Pod 3</option>
+            <!-- Add more options as needed -->
+        </select>
+        <br>
+        <label for="application" class="form-label">Application:</label>
+        <select id="application" name="application" required>
+            <option value="App 1">App 1</option>
+            <option value="App 2">App 2</option>
+            <option value="App 3">App 3</option>
+            <!-- Add more options as needed -->
+        </select>
+        <br>
+        <label for="node_names" class="form-label">Node Names:</label>
+        <input type="text" id="node_names" name="node_names" required>
+        <br>
+        <label for="jira_id" class="form-label">Jira ID (SO- or PI-):</label>
+        <input type="text" id="jira_id" name="jira_id" required>
+        <br>
+        <label for="jira_status" class="form-label">Jira Status:</label>
+        <select id="jira_status" name="jira_status" required>
+            <option value="Open">Open</option>
+            <option value="Closed">Closed</option>
+            <!-- Add more options as needed -->
+        </select>
+        <br>
+        <button type="submit">Add Debug Log</button>
+    </form>
+</div>
+{% endblock %}
+

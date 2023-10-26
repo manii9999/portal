@@ -1,0 +1,204 @@
+{% extends "common_template.html" %}
+
+{% block content %}
+    <section class="shift-details">
+        <h2>Shift Details</h2>
+        <!-- Add your shift details content here -->
+    </section>
+
+    <section class="update-list">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 60px;">Date</th>
+                    <th style="width: 60px;">Shift Type</th>
+                    <th style="width: 100px;">P0 Updates</th>
+                    <th style="width: 100px;">P1 Updates</th>
+                    <th style="width: 60px;">Total Alerts</th>
+                    <th style="width: 80px;">Shift Engineers</th>
+                    <!-- Add more table headers for additional columns -->
+		    <th style="width: 60px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for update in updates %}
+                <tr>
+                    <td>
+                        {{ update.date.strftime('%d-%m-%Y') }}
+                    </td>
+                    <td>{{ update.shift_type }}</td>
+		    <td class="p0-p1-update" data-tooltip="{{ update.p0_updates }}">{{ update.p0_updates }}</td>
+		    <td class="p0-p1-update" data-tooltip="{{ update.p1_updates }}">{{ update.p1_updates }}</td>
+                    <td>{{ update.alerts_handled }}</td>
+                    <td>{{ update.shift_engineer }}</td>
+                    <!-- Add more columns as needed -->
+                    <td>
+                        <!-- Edit icon with tooltip -->
+                        <div class="tooltip">
+                            <a href="{{ url_for('edit_update', date=update.date, shift_type=update.shift_type) }}" class="btn">
+                                <i class="fas fa-edit icon"></i>
+                                <span class="tooltiptext">Edit</span>
+                            </a>
+                        </div>
+
+                        <!-- View icon with tooltip -->
+                        <div class="tooltip">
+                            <a href="{{ url_for('get_update', date=update.date, shift_type=update.shift_type) }}" class="btn">
+                                <i class="far fa-eye icon"></i>
+                                <span class="tooltiptext">View</span>
+                            </a>
+                        </div>
+
+                        <!-- Download icon with tooltip -->
+                        <div class="tooltip">
+                            <a href="{{ url_for('download_updates', date=update.date, shift_type=update.shift_type) }}" class="btn">
+                                <i class="fas fa-download icon"></i>
+                                <span class="tooltiptext">Download</span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <style>
+        /* Style for shift-details and update-list sections */
+        .shift-details {
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            padding: 5px;
+            margin-top: 45px; /* Adjusted margin-top to avoid overlap with header */
+        }
+
+        .shift-details h2 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            margin-top: 0;
+	    height: 5px;
+            color: #595959;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2px; /* Added margin-top for better spacing */
+        }
+
+        th, td {
+            text-align: left;
+            padding: 5px; /* Increased padding for better spacing */
+            border-bottom: 1px solid #ddd;
+            color: #333;
+            font-size: 10px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+	.table-container {
+            max-width: 100%;
+            overflow-x: auto; /* Add horizontal scroll if needed */
+        }
+
+        /* Style for the tooltip text */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 80px;
+            background-color: #333; /* Background color for tooltip */
+            color: #fff; /* Text color for tooltip */
+            text-align: center;
+            border-radius: 3px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        /* Show the tooltip text when hovering over the icon container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+	/* Style for the P0 and P1 Updates columns */
+        .p0-p1-update {
+        white-space: nowrap; /* Prevent line breaks */
+        overflow: hidden; /* Hide any overflow */
+        text-overflow: ellipsis; /* Add an ellipsis (...) for text overflow */
+        }
+	/* Style for the tooltip */
+	.p0-p1-update:hover::before {
+        content: attr(data-tooltip);
+        position: absolute;
+        background-color: #333;
+        color: #fff;
+        padding: 5px;
+        border-radius: 3px;
+        z-index: 1;
+        white-space: normal; /* Allow wrapping in tooltip */
+        }
+	    /* Style for the custom tooltip */
+        .custom-tooltip {
+        position: absolute;
+        background-color: #333;
+        color: #fff;
+        padding: 5px;
+        border-radius: 3px;
+        white-space: nowrap;
+        z-index: 9999; /* Ensure it's above other elements */
+        }
+    </style>
+<script>
+    // Get all the table rows with class 'p0-p1-update'
+    const p0p1UpdateRows = document.querySelectorAll('.p0-p1-update');
+
+    // Add mouseover event listeners to each row
+    p0p1UpdateRows.forEach((row) => {
+        row.addEventListener('mouseover', () => {
+            // Get the 'data-tooltip' attribute value for this row
+            const tooltipText = row.getAttribute('data-tooltip');
+
+            // Create a tooltip element and set its content
+            const tooltip = document.createElement('div');
+            tooltip.className = 'custom-tooltip';
+            tooltip.textContent = tooltipText;
+
+            // Append the tooltip element to the row
+            row.appendChild(tooltip);
+
+            // Calculate the position of the tooltip relative to the row
+            const rect = row.getBoundingClientRect();
+            tooltip.style.left = '100%'; // Position the tooltip to the right of the row
+            tooltip.style.top = '0';
+
+            // Handle scrolling if the tooltip goes off-screen
+            if (rect.right + tooltip.clientWidth > window.innerWidth) {
+                tooltip.style.left = 'auto';
+                tooltip.style.right = '100%';
+            }
+        });
+
+        row.addEventListener('mouseout', () => {
+            // Remove the tooltip element when mouse leaves the row
+            const tooltip = row.querySelector('.custom-tooltip');
+            if (tooltip) {
+                tooltip.remove();
+            }
+        });
+    });
+</script>
+
+
+{% endblock %}
+

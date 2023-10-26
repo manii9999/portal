@@ -1,0 +1,111 @@
+{% extends "ssl.html" %}
+
+{% block data_content %}
+
+<style>
+/* CSS styles for SSL form */
+.ssl-form-container {
+    width: 400px;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+    font-size: 16px;
+    margin: 10px 0;
+    text-align: center;
+}
+.form-label {
+    font-size: 14px;
+}
+
+
+.form-group {
+    margin: 10px 0;
+}
+
+.form-input, .form-button {
+    padding: 10px;
+    width: 95%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: left;
+}
+.form-select, .form-button {
+    padding: 5px;
+    width: 30%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: left;
+}
+        input[type="date"] {
+            padding: 3px;
+            cursor: pointer;
+            width: 25%; /* Expand to full width of the container */
+            margin-bottom: 5px;
+        }
+
+
+.form-select {
+    height: 30px;
+}
+
+.form-button {
+    background-color: #0077c8;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-button:hover {
+    background-color: #0055a4;
+}
+</style>
+<div class="ssl-form-container">
+    <h2 class="form-title">Add SSL Certificate</h2>
+    <form method="POST" action="{{ url_for('add_website') }}">
+        <div class="form-group">
+            <label for="expiry_date">Expiry Date:</label>
+            <input type="date" name="expiry_date" id="expiry_date" class="form-input" required>
+        </div>
+        <div class="form-group">
+            <label for="name">URL:</label>
+            <input type="text" name="name" id="name" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <label for="jira_id">Jira ID:</label>
+            <input type="text" name="jira_id" id="jira_id" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <select name="status" id="status" class="form-select">
+                <option value="Open">Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Done">Done</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Add URL" class="form-button">
+        </div>
+    </form>
+</div>
+
+<script>
+    const jiraIdInput = document.getElementById('jira_id');
+
+    jiraIdInput.addEventListener('input', function () {
+        if (!jiraIdInput.value.startsWith('SO-')) {
+            jiraIdInput.setCustomValidity("Jira ID must start with 'SO-'");
+        } else {
+            jiraIdInput.setCustomValidity('');
+        }
+    });
+</script>
+{% endblock %}

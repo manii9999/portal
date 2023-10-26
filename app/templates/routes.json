@@ -1,0 +1,16 @@
+[
+   {"user": "Route Name 1", "url": "user_profile"},
+   {"password": "Route Name 1", "url": "change_password"},
+   {"shift updates": "Route Name 1", "url": "shift_updates"},
+   {"view updates": "Route Name 1", "url": "view_updates"},
+   {"add update": "Route Name 1", "url": "add_update"},
+   {"edit by shift": "Route Name 1", "url": "edit_by_date_shift"},
+   {"get": "Route Name 1", "url": "get_data"},
+   {"edit update": "Route Name 1", "url": "edit_update"},
+   {"get update": "Route Name 1", "url": "get_update"},
+   {"monthly": "Route Name 1", "url": "monthly"},
+   {"tracker": "Route Name 1", "url": "c_updates"},
+   {"home": "Route Name 1", "url": "home"},
+   {"add": "Route Name 1", "url": "critical_updates"},
+   {"critical": "Route Name 1", "url": "c_updates"}
+]
