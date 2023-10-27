@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     // Deploy your Flask application
-                    sh 'python run.py'
+                    sh 'python3 run.py'
                 }
             }
         }
