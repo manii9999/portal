@@ -90,6 +90,13 @@
             <label for="shift_type">Shift Type:</label>
             <textarea name="shift_type" rows="1" cols="50" required oninput="autoExpand(this)">{{ update.shift_type }}</textarea>
 
+            <label for="p0_updates">P0 Updates:</label>
+            <textarea name="p0_updates" rows="1" cols="50" oninput="autoExpand(this)">{{ update.p0_updates }}</textarea>
+
+            <label for="p1_updates">P1 Updates:</label>
+            <textarea name="p1_updates" rows="1" cols="50" oninput="autoExpand(this)">{{ update.p1_updates }}</textarea>
+
+
             <label for="done_in_shift">Done in Shift:</label>
             <textarea name="done_in_shift" rows="1" cols="50" oninput="autoExpand(this)">{{ update.done_in_shift }}</textarea>
 
@@ -97,7 +104,7 @@
             <textarea name="update_to_next_shift" rows="1" cols="50" oninput="autoExpand(this)">{{ update.update_to_next_shift }}</textarea>
 
             <label for="alerts_handled">Alerts Handled:</label>
-            <textarea name="alerts_handled" rows="1" cols="50" oninput="autoExpand(this)">{{ update.alerts_handled }}</textarea>
+            <input type="number" name="alerts_handled"  oninput="autoExpand(this)">{{ update.alerts_handled }}
 
             <label for="actioned_alerts">Actioned Alerts:</label>
             <textarea name="actioned_alerts" rows="1" cols="50" oninput="autoExpand(this)">{{ update.actioned_alerts }}</textarea>
@@ -159,8 +166,6 @@
             <label for="follow_ups">Follow Ups:</label>
             <textarea name="follow_ups" rows="1" cols="50" oninput="autoExpand(this)">{{ update.follow_ups }}</textarea>
 
-            <label for="shift_engineer">Shift Engineers:</label>
-            <textarea name="shift_engineer" rows="1" cols="50" oninput="autoExpand(this)">{{ update.shift_engineer }}</textarea>
 
             <input type="submit" value="Update">
         </form>

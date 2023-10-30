@@ -4,7 +4,7 @@
 <style>
     h2 {
         font-size: 14px;
-	font-family: Tahoma, sans-serif;
+        font-family: Tahoma, sans-serif;
     }
     .error-message {
         color: red;
@@ -13,7 +13,7 @@
     }
     .form-label {
         display: inline-block;
-	font-family: Tahoma, sans-serif;
+        font-family: Tahoma, sans-serif;
         width: 150px;
         text-align: right;
         padding-right: 10px;
@@ -21,10 +21,10 @@
         padding-bottom: 5px;
         font-size: 12px;
     }
-   select {
+    select {
         font-size: 12px;
-   }
-   .success-message {
+    }
+    .success-message {
         color: green;
         margin-top: 10px;
         font-size: 14px;
@@ -44,7 +44,7 @@
         padding: 5px;
         font-size: 12px;
         vertical-align: middle; /* Vertically align content in cells */
-	font-family: Tahoma, sans-serif;
+        font-family: Tahoma, sans-serif;
     }
 
     th {
@@ -88,11 +88,11 @@
         </tr>
         {% for debug_log in debug_logs %}
             <tr>
-                <td>{{ debug_log.date }}</td>
+                <td>{{ debug_log.date.strftime('%d-%m-%Y') }}</td>
                 <td>{{ debug_log.pod_name }}</td>
                 <td>{{ debug_log.application }}</td>
                 <td>{{ debug_log.node_names }}</td>
-                <td>{{ debug_log.jira_id }}</td>
+                <td><a href="https://jira.opsramp.net/browse/{{ debug_log.jira_id }}" target="_blank">{{ debug_log.jira_id }}</a></td>
                 <td>
                     <form class="update-form" method="POST" action="{{ url_for('update_jira_status', id=debug_log.id) }}">
                         <select name="jira_status">

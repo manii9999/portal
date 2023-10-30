@@ -156,7 +156,7 @@
         <a href="#" onclick="toggleSubMenu('add-updates-submenu', 'add-updates-link')" id="add-updates-link">Add Updates</a>
         <div class="sub-menu" id="add-updates-submenu">
             <a href="{{ url_for('add') }}">Add Critical Updates</a>
-            <a href="{{ url_for('add_update') }}">Add Daily Updates</a>
+            <a href="{{ url_for('add_update') }}">Add Shift Updates</a>
             <a href="{{ url_for('add_infra_change') }}">Add Capacity Changes</a>
         </div>
         <a href="#" onclick="toggleSubMenu('view-updates-submenu', 'view-updates-link')" id="view-updates-link">View Updates</a>
@@ -174,10 +174,12 @@
             <a href="{{ url_for('last_sixmonth_p0_updates') }}">Last 6 Months Updates</a>
             <a href="{{ url_for('custom_time_range_updates') }}">Custom Range Updates</a>
         </div>
-        <a href="#" onclick="toggleSubMenu('debug-logs-submenu', 'debug-logs-link')" id="debug-logs-link">Debug Logs</a>
+        <a href="#" onclick="toggleSubMenu('debug-logs-submenu', 'debug-logs-link')" id="debug-logs-link">Dev Requests</a>
         <div class="sub-menu" id="debug-logs-submenu">
             <a href="{{ url_for('debug') }}">Add Debug Logs</a>
             <a href="{{ url_for('view_debug_logs') }}">View Debug Logs</a>
+            <a href="{{ url_for('add_dev_requests') }}">Add Dev Requests</a>
+            <a href="{{ url_for('view_dev_requests') }}">View Dev Requests</a>
         </div>
         <a href="#" onclick="toggleSubMenu('tracker-submenu', 'tracker-link')" id="tracker-link">Tracker</a>
         <div class="sub-menu" id="tracker-submenu">
@@ -188,6 +190,12 @@
         <div class="sub-menu" id="command-center-submenu">
             <a href="{{ url_for('view_commands') }}">Commands</a>
         </div>
+	<a href="#" onclick="toggleSubMenu('ssl-submenu', 'ssl-link')" id="ssl-link">SSL</a>
+        <div class="sub-menu" id="ssl-submenu">
+            <a href="{{ url_for('add_website') }}">Add SSL</a>
+            <a href="{{ url_for('ssl_expiry') }}">View SSL</a>
+        </div>
+
 
     </div>
     <div class="data-container">
@@ -218,14 +226,13 @@
         links.forEach(function (link) {
             link.classList.remove("selected-menu");
         });
-
         if (subMenu.style.display === "block") {
-            subMenu.style.display = "block"; // Change to "block" to keep it open
-            clickedLink.classList.add("selected-menu");
-        } else {
-            subMenu.style.display = "block";
-            clickedLink.classList.add("selected-menu");
-        }
+	    subMenu.style.display = "none"; // Change to "none" to close it
+	    clickedLink.classList.remove("selected-menu"); // Remove the selected class
+	} else {
+	    subMenu.style.display = "block";
+	    clickedLink.classList.add("selected-menu");
+	}
     }
 
     // Close all submenus when clicking outside the left panel

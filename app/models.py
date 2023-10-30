@@ -1,6 +1,9 @@
 # myapp/models.py
 from datetime import datetime
 from sqlalchemy import event
+from sqlalchemy import Column, Integer
+import json
+from sqlalchemy.orm import class_mapper
 from app.db import db
 from flask_login import UserMixin
 from sqlalchemy import Boolean, String
@@ -10,32 +13,34 @@ class ShiftUpdate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime)
     shift_type = db.Column(db.String(255))
-    done_in_shift = db.Column(db.String(255))
-    update_to_next_shift = db.Column(db.String(255))
-    alerts_handled = db.Column(db.String(255))
-    actioned_alerts = db.Column(db.String(255))
-    manual_restarts = db.Column(db.String(255))
-    tasks = db.Column(db.String(255))
-    resolved_tasks = db.Column(db.String(255))
-    closed_tasks = db.Column(db.String(255))
-    dev_requests_calls = db.Column(db.String(255))
-    dev_requests_pi_calls = db.Column(db.String(255))
-    dev_requests_debug_loggers = db.Column(db.String(255))
-    dev_requests_noise = db.Column(db.String(255))
-    dev_requests_jar_replace = db.Column(db.String(255))
-    dev_requests_replicas = db.Column(db.String(255))
-    dev_requests_threads = db.Column(db.String(255))
-    db_queries_single = db.Column(db.String(255))
-    db_queries_all_pods = db.Column(db.String(255))
-    jira_so_tickets = db.Column(db.String(255))
-    jira_ops_to_engg = db.Column(db.String(255))
-    capacity_changes = db.Column(db.String(255))
-    activity = db.Column(db.String(255))
-    db_loads = db.Column(db.String(255))
-    follow_ups = db.Column(db.String(255))
+    p0_updates = db.Column(db.String(255), nullable=True)
+    p1_updates = db.Column(db.String(255), nullable=True)
+    done_in_shift = db.Column(db.String(255), nullable=True)
+    update_to_next_shift = db.Column(db.String(255), nullable=True)
+    alerts_handled = db.Column(db.String(255), nullable=True)
+    actioned_alerts = db.Column(db.String(255), nullable=True)
+    manual_restarts = db.Column(db.String(255), nullable=True)
+    tasks = db.Column(db.String(255), nullable=True)
+    resolved_tasks = db.Column(db.String(255), nullable=True)
+    closed_tasks = db.Column(db.String(255), nullable=True)
+    dev_requests_calls = db.Column(db.String(255), nullable=True)
+    dev_requests_pi_calls = db.Column(db.String(255), nullable=True)
+    dev_requests_debug_loggers = db.Column(db.String(255), nullable=True)
+    dev_requests_noise = db.Column(db.String(255), nullable=True)
+    dev_requests_jar_replace = db.Column(db.String(255), nullable=True)
+    dev_requests_replicas = db.Column(db.String(255), nullable=True)
+    dev_requests_threads = db.Column(db.String(255), nullable=True)
+    db_queries_single = db.Column(db.String(255), nullable=True)
+    db_queries_all_pods = db.Column(db.String(255), nullable=True)
+    jira_so_tickets = db.Column(db.String(255), nullable=True)
+    jira_ops_to_engg = db.Column(db.String(255), nullable=True)
+    capacity_changes = db.Column(db.String(255), nullable=True)
+    activity = db.Column(db.String(255), nullable=True)
+    db_loads = db.Column(db.String(255), nullable=True)
+    follow_ups = db.Column(db.String(255), nullable=True)
     shift_engineer = db.Column(db.String(255))
 
-    def __init__(self, date, shift_type, done_in_shift, update_to_next_shift,
+    def __init__(self, date, shift_type, p0_updates, p1_updates, done_in_shift, update_to_next_shift,
                  alerts_handled, actioned_alerts, manual_restarts, tasks, resolved_tasks, closed_tasks,
                  dev_requests_calls, dev_requests_pi_calls, dev_requests_debug_loggers, dev_requests_noise,
                  dev_requests_jar_replace, dev_requests_replicas, dev_requests_threads, db_queries_single,
@@ -43,6 +48,8 @@ class ShiftUpdate(db.Model):
                  follow_ups, shift_engineer):
         self.date = date
         self.shift_type = shift_type
+        self.p0_updates = p0_updates
+        self.p1_updates = p1_updates
         self.done_in_shift = done_in_shift
         self.update_to_next_shift = update_to_next_shift
         self.alerts_handled = alerts_handled
@@ -68,9 +75,38 @@ class ShiftUpdate(db.Model):
         self.follow_ups = follow_ups
         self.shift_engineer = shift_engineer
 
-    def __repr__(self):
-        return f"ShiftUpdate('{self.date}', '{self.shift_type}')"
-
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'date': self.date.isoformat(),
+            'shift_type': self.shift_type,
+            'p0_updates': self.p0_updates,
+            'p1_updates': self.p1_updates,
+            'done_in_shift': self.done_in_shift,
+            'update_to_next_shift': self.update_to_next_shift,
+            'alerts_handled': self.alerts_handled,
+            'actioned_alerts': self.actioned_alerts,
+            'manual_restarts': self.manual_restarts,
+            'tasks': self.tasks,
+            'resolved_tasks': self.resolved_tasks,
+            'closed_tasks': self.closed_tasks,
+            'dev_requests_calls': self.dev_requests_calls,
+            'dev_requests_pi_calls': self.dev_requests_pi_calls,
+            'dev_requests_debug_loggers': self.dev_requests_debug_loggers,
+            'dev_requests_noise': self.dev_requests_noise,
+            'dev_requests_jar_replace': self.dev_requests_jar_replace,
+            'dev_requests_replicas': self.dev_requests_replicas,
+            'dev_requests_threads': self.dev_requests_threads,
+            'db_queries_single': self.db_queries_single,
+            'db_queries_all_pods': self.db_queries_all_pods,
+            'jira_so_tickets': self.jira_so_tickets,
+            'jira_ops_to_engg': self.jira_ops_to_engg,
+            'capacity_changes': self.capacity_changes,
+            'activity': self.activity,
+            'db_loads': self.db_loads,
+            'follow_ups': self.follow_ups,
+            'shift_engineer': self.shift_engineer,
+        }
 
 class CriticalUpdates(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -88,6 +124,7 @@ class User(UserMixin, db.Model):
 #class User(db.Model):
     __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
@@ -193,3 +230,25 @@ class Website(db.Model):
     jira_id = db.Column(db.String(20), nullable=False)
     status = db.Column(db.String(20), nullable=False)
     expiry_date = db.Column(db.Date, nullable=False)
+
+
+class DevRequests(db.Model):
+    __tablename__ = 'dev_requests'
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False, default=datetime.now().date())
+    calls = db.Column(db.String(255), nullable=True)
+    pi_calls = db.Column(db.String(255), nullable=True)
+    noise = db.Column(db.String(255), nullable=True)
+    jar_replace = db.Column(db.String(255), nullable=True)
+    replicas = db.Column(db.String(255), nullable=True)
+    threads = db.Column(db.String(255), nullable=True)
+
+    def __init__(self, date, calls, pi_calls, noise, jar_replace, replicas, threads):
+        self.date = date
+        self.calls = calls
+        self.pi_calls = pi_calls
+        self.noise = noise
+        self.jar_replace = jar_replace
+        self.replicas = replicas
+        self.threads = threads

@@ -185,7 +185,6 @@
 <form method="GET" action="/download_updates">
     <input type="hidden" name="date" value="{{ selected_date }}">
     <input type="hidden" name="shift_type" value="{{ selected_shift_type }}">
-    <button type="submit" {% if not updates %}disabled{% endif %}>Download Updates</button>
 </form>
 {% endblock %}
 

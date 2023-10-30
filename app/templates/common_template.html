@@ -14,7 +14,7 @@
         /* Style for the header */
         .header {
             background: linear-gradient(107.74deg, #0077c8 -13.29%, #0077c8 147.42%);
-	    font-family: Tahoma, sans-serif;
+	    font-family: Tahoma, sans-serif; 
             color: #040720;
             padding: 5px;
             box-shadow: -5px 0 5px rgba(0, 0, 0, 0.1), 5px 0 5px rgba(0, 0, 0, 0.1);
@@ -56,6 +56,7 @@
             height: 30px;
             opacity: 0.7;
             background-color: transparent;
+	    filter: brightness(1.2) saturate(1.0) hue-rotate(30deg) contrast(1.2);
         }
 
 
@@ -66,12 +67,11 @@
 	    color: #ffffff;
             text-decoration: none;
             border-radius: 3px;
-	    font-weight: bold;
+	    font-weight: 500;
             transition: background-color 0.3s ease;
             margin-left: 5px;
             font-size: 12px;
-	 /*   font-family: Copperplate, "Copperplate Gothic Light", fantasy, Arial, sans-serif;*/
-	    font-family: Tahoma, sans-serif;
+	    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
         }
 
         /* Change link color on hover */
@@ -123,18 +123,19 @@
             color: #ffffff;
             text-decoration: none;
             border-radius: 3px;
-            font-weight: bold;
+	    font-weight: 500;
             transition: background-color 0.3s ease;
             margin-left: 5px;
             font-size: 12px;
-            font-family: Tahoma, sans-serif;
+	    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+     /*       font-family: Tahoma, sans-serif;*/
 	}
 
         .dropdown-content {
             display: none;
             position: absolute;
             background-color: #f9f9f9;
-            min-width: 150px;
+            min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             z-index: 1;
 	    text-align: left;
@@ -150,11 +151,21 @@
             display: block;
             color: #000066;
             font-size: 12px;
+	    width: auto;
         }
 
         .dropdown-content a:hover {
-            background-color: #f2f2f2;
+            background-color: #d9d9d9;
         }
+	.selected {
+	    background-color: #0077c8; /* Set the background color for the selected link */
+	    color: #fff; /* Set the text color for the selected link */
+	}
+	.dropdown-toggle.selected {
+            background-color: #0077c8;
+            color: #fff;
+        }
+
     </style>
 </head>
 <body>
@@ -169,14 +180,14 @@
             <a href="{{ url_for('shift_updates') }}" class="btn">
                 <span class="tooltiptext">Home</span>
             </a>
-		<div class="dropdown">
-		<a class="dropdown-toggle">Add Updates</a>
+            <div class="dropdown">
+                <a class="dropdown-toggle">Add Updates</a>
                 <div class="dropdown-content">
                     <a href="{{ url_for('add') }}">Add Critical Updates</a>
-                    <a href="{{ url_for('add_update') }}">Add Daily Updates</a>
+                    <a href="{{ url_for('add_update') }}">Add Shift Updates</a>
                     <a href="{{ url_for('add_infra_change') }}">Add Capacity Changes</a>
                 </div>
-		</div>
+            </div>
 		<div class="dropdown">
             <a class="dropdown-toggle">View Updates</a>
 	    <div class="dropdown-content">
@@ -188,6 +199,7 @@
                 <div class="dropdown">
             <a class="dropdown-toggle">Critical Updates</a>
             <div class="dropdown-content">
+                    <a href="{{ url_for('view') }}">View Critical Updates</a>
                     <a href="{{ url_for('monthly') }}">Monthly Critical Issues</a>
                     <a href="{{ url_for('last_month_p0_updates') }}">Last Month Updates</a>
                     <a href="{{ url_for('last_threemonth_p0_updates') }}">Last 3 Month Updates</a>
@@ -195,7 +207,17 @@
                     <a href="{{ url_for('custom_time_range_updates') }}">Custom Range Updates</a>           
 	    </div>
                 </div>
-		                <div class="dropdown">
+		<div class="dropdown">
+			<a class="dropdown-toggle">Dev Requests</a>
+            <div class="dropdown-content">
+                     <a href="{{ url_for('debug') }}">Add Debug Logs</a>
+                     <a href="{{ url_for('view_debug_logs') }}">View Debug Logs</a>
+                     <a href="{{ url_for('add_dev_requests') }}">Add Dev Requests</a>
+		     <a href="{{ url_for('view_dev_requests') }}">View Dev Requests</a>
+            </div>
+                </div>
+
+	       <div class="dropdown">
             <a class="dropdown-toggle">Tracker</a>
             <div class="dropdown-content">
                      <a href="{{ url_for('tracker') }}">Add Tracker</a>
@@ -217,13 +239,12 @@
             </div>
                 </div>
 
-
-
             <div class="avatar-logo">
                 <a href="{{ url_for('user_profile') }}" class="avatar-link">
                     <img src="static/images/avtr.png" alt="Avatar">
                 </a>
             </div>
+
 	</div>
         </div>
     <div class="container">

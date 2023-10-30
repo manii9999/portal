@@ -1,0 +1,69 @@
+{% extends "d_updates.html" %}
+
+{% block data_content %}
+<link rel="stylesheet" href="static/button.css">
+<style>
+    h2 {
+        font-size: 14px;
+        font-family: Tahoma, sans-serif;
+    }
+    .error-message {
+        color: red;
+        margin-top: -20px;
+        padding: 5px;
+    }
+    .form-label {
+        display: inline-block;
+        font-family: Tahoma, sans-serif;
+        width: 150px;
+        text-align: right;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-size: 12px;
+        margin-bottom: 10px; /* Added margin-bottom for spacing */
+    }
+    select {
+        font-size: 12px;
+    }
+    .success-message {
+        color: green;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+    input[type="submit"] {
+        margin-left: 170px;
+        margin-top: 10px;
+   }
+
+</style>
+
+<div class="form">
+    <h2>Add Dev Requests</h2>
+    <form method="POST">
+            <label for="date" class="form-label">Date:</label>
+            <input type="date" id="date" name="date" required>
+	    <br>
+            <label for="calls" class="form-label">Calls:</label>
+            <input type="text" id="calls" name="calls" value="">
+	    <br>
+            <label for="pi_calls" class="form-label">PI Calls:</label>
+            <input type="text" id="pi_calls" name="pi_calls" value="">
+	    <br>
+            <label for="noise" class="form-label">Noise:</label>
+            <input type="text" id="noise" name="noise" value="">
+	    <br>
+            <label for="jar_replace" class="form-label">Jar Replace:</label>
+            <input type="text" id="jar_replace" name="jar_replace" value="">
+	    <br>
+            <label for="replicas" class="form-label">Replicas:</label>
+            <input type="text" id="replicas" name="replicas" value="">
+	    <br>
+            <label for="threads" class="form-label">Threads:</label>
+            <input type="text" id="threads" name="threads" value="">
+	    <br>
+        <input type="submit" value="Add Dev Requests">
+    </form>
+</div>
+{% endblock %}
+

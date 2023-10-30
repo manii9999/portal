@@ -91,10 +91,13 @@
         <div class="left-panel">
             <h3>Categories</h3>
             <button class="category-button" onclick="filterByCategory('All')">All</button>
-            <button class="category-button" onclick="filterByCategory('test1')">test1</button>
-            <button class="category-button" onclick="filterByCategory('test2')">test2</button>
-            <button class="category-button" onclick="filterByCategory('test3')">test3</button>
-            <button class="category-button" onclick="filterByCategory('test4')">test4</button>
+            <button class="category-button" onclick="filterByCategory('OS')">OS</button>
+            <button class="category-button" onclick="filterByCategory('K8S')">K8S</button>
+            <button class="category-button" onclick="filterByCategory('Cassandra')">Cassandra</button>
+            <button class="category-button" onclick="filterByCategory('Redis')">Redis</button>
+            <button class="category-button" onclick="filterByCategory('Salt')">Salt</button>
+            <button class="category-button" onclick="filterByCategory('Kafka')">Kafka</button>
+            <button class="category-button" onclick="filterByCategory('HDFS')">HDFS</button>
             <!-- Add more buttons here for each category -->
 	        <form method="post">
         <label for="filter_usage">For:</label>
@@ -112,7 +115,7 @@
             <table>
                 <tr>
                     <th>Category</th>
-                    <th>Usage</th>
+                    <th>Using For</th>
                     <th>Command</th>
                     <th>Edit</th>
                 </tr>

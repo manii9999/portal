@@ -1,16 +1,21 @@
 # myapp/app/routes.py
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, send_file, Response
+from flask_redis import FlaskRedis
+import redis
+import json
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from flask_login import login_required, current_user
-from app.models import ShiftUpdate, CriticalUpdates, User, Tracker, InfraChanges, KnowledgeBase, CommandCenter, DebugLog, Website
+from app.models import ShiftUpdate, CriticalUpdates, User, Tracker, InfraChanges, KnowledgeBase, CommandCenter, DebugLog, Website, DevRequests
 from app.db import db
 from app.db import Session
 from flask_login import login_user, logout_user, login_required, LoginManager, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
+from datetime import date
 import pandas as pd
 import logging
+from sqlalchemy.orm import class_mapper
 import pytz
 import io
 import os, csv
@@ -30,6 +35,9 @@ app.secret_key = 'Kf}>NPGv2er<;P,z?U8x01}c'
 
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=30)
 
+redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+app.config['REDIS_URL'] = "redis://localhost:6379/0"  # Change this to your Redis server URL
+redis = FlaskRedis(app)
 
 
 # Configure the logger to write to a file
@@ -38,7 +46,7 @@ log_handler.setLevel(logging.INFO)  # Set the desired logging level
 app.logger.addHandler(log_handler)
 
 # Now, you can log messages using the app logger
-app.logger.info("This is a log message.")
+#app.logger.nfo("This is a log message.")
 
 
 # Modify the function to generate an OTP secret
@@ -206,6 +214,7 @@ def account_details():
 
     email = current_user.email
     utc_login_time = current_user.login_time
+    name = current_user.name
 
     # Define timezone objects for UTC and IST
     utc_timezone = pytz.timezone('UTC')
@@ -216,7 +225,7 @@ def account_details():
     # Convert UTC login time to IST
     ist_login_time = utc_login_time.astimezone(ist_timezone)
 
-    return render_template('account_details.html', login_time=ist_login_time, email=email)
+    return render_template('account_details.html', login_time=ist_login_time, email=email, name=name)
 #@app.route('/')
 #def home():
  #   if current_user.is_authenticated:
@@ -307,8 +316,8 @@ def shift_updates():
     return render_template('home.html')
 
 
-
-@app.route('/add_website', methods=['GET','POST'])
+@app.route('/add_website', methods=['GET', 'POST'])
+@login_required
 def add_website():
     if request.method == 'POST':
         name = request.form['name']
@@ -316,24 +325,55 @@ def add_website():
         jira_id = request.form['jira_id']
         status = request.form['status']
 
+        # Convert expiry_date to a string in ISO format
+        expiry_date = date.fromisoformat(expiry_date)  # Parse the date
+        expiry_date_str = expiry_date.isoformat()  # Convert to ISO 8601 format
+
         website = Website(name=name, expiry_date=expiry_date, jira_id=jira_id, status=status)
         db.session.add(website)
         db.session.commit()
 
-    #return redirect(url_for('index'))  # Redirect back to the homepage
+        # Store the website data in Redis
+        redis_key = f'website:{website.id}'
+        website_data = {
+            'name': website.name,
+            'expiry_date': expiry_date_str,  # Store as a string
+            'jira_id': website.jira_id,
+            'status': website.status,
+        }
+        redis.hmset(redis_key, website_data)
+
+    # return redirect(url_for('index'))  # Redirect back to the homepage
     return render_template('add_website.html')
 
+
+
 @app.route('/ssl_expiry', methods=['GET'])
+@login_required
 def ssl_expiry():
     # Retrieve the list of websites and their SSL certificate information
-    websites = Website.query.all()  # Assuming you have a Website model
+    websites = Website.query.all()
 
-    return render_template('ssl_expiry.html', websites=websites)  # Display the notifications on the homepage
+    # Retrieve SSL certificate information from Redis
+    for website in websites:
+        redis_key = f'website:{website.id}'
+        website_data = redis.hgetall(redis_key)
+
+        # Access the values as needed
+        name = website_data.get('name', '')
+        expiry_date = website_data.get('expiry_date', '')
+        jira_id = website_data.get('jira_id', '')
+        status = website_data.get('status', '')
+
+        # Now, you can use these values in your template or view
+
+    return render_template('ssl_expiry.html', websites=websites)
 
 
 
 # Flask route to update status
 @app.route('/update_status/<int:website_id>', methods=['POST'])
+@login_required
 def update_status(website_id):
     # Retrieve the website based on website_id
     website = Website.query.get(website_id)
@@ -358,7 +398,17 @@ def update_status(website_id):
     flash("Status updated successfully", "success")
     return redirect(url_for('ssl_expiry'))
 
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return super().default(obj)
 
+def serialize_sqlalchemy_model(model):
+    serialized = {}
+    for column in class_mapper(model.__class__).columns:
+        serialized[column.name] = getattr(model, column.name)
+    return serialized
 
 @app.route('/view_shift_updates')
 @login_required
@@ -366,11 +416,28 @@ def view_shift_updates():
     # Get the current date
     current_date = datetime.now()
 
-    # Format the date as dd/mm/yyyy
-    formatted_date = current_date.strftime('%d/%m/%Y')
+    # Check if the updates data is available in Redis
+    redis_key = 'shift_updates_data'
+    updates_data = redis.get(redis_key)
 
-    # Query the database to get shift updates and order them by date
-    updates = ShiftUpdate.query.order_by(ShiftUpdate.date.desc()).all()
+    if not updates_data:
+        # Data not found in Redis, fetch it from the database
+        updates = ShiftUpdate.query.order_by(ShiftUpdate.date.desc()).all()
+
+        # Convert the updates to JSON-serializable format
+        updates_dict = [serialize_sqlalchemy_model(update) for update in updates]
+
+        print(updates)
+
+        # Serialize the data with the custom JSON encoder and store it in Redis as JSON
+        redis.set(redis_key, json.dumps(updates_dict, cls=CustomJSONEncoder))
+    else:
+        # Data found in Redis, parse it back from JSON
+        updates_dict = json.loads(updates_data)
+        updates = [ShiftUpdate(**{k: v for k, v in update.items() if k != 'id'}) for update in updates_dict]
+        print(updates)
+
+    formatted_date = current_date.strftime('%d/%m/%Y')
 
     return render_template('view_shift_updates.html', updates=updates, formatted_date=formatted_date)
 
@@ -405,6 +472,8 @@ def add_update():
         shift_type = request.form['shift_type']
 
         # Extract form field values from request.form
+        p0_updates = request.form['p0_updates']
+        p1_updates = request.form['p1_updates']
         done_in_shift = request.form['done_in_shift']
         update_to_next_shift = request.form['update_to_next_shift']
         alerts_handled = request.form.get('alerts_handled')
@@ -435,11 +504,12 @@ def add_update():
             error_message = "A record with the same date and shift type already exists."
             return render_template('add_update.html', error_message=error_message)
 
-        # Define p0_updates and p1_updates initially
-
+        # Create a new ShiftUpdate instance
         shift_update = ShiftUpdate(
             date=date,
             shift_type=shift_type,
+            p0_updates=p0_updates,
+            p1_updates=p1_updates,
             done_in_shift=done_in_shift,
             update_to_next_shift=update_to_next_shift,
             alerts_handled=alerts_handled,
@@ -466,14 +536,16 @@ def add_update():
             shift_engineer=current_user.username  # Set shift_engineer to the username of the current user
         )
 
+        # Add the new ShiftUpdate to the database
         db.session.add(shift_update)
         db.session.commit()
 
-        return redirect(url_for('index'))
+        # Clear the Redis cache for "shift_updates_data"
+        redis_client.delete('shift_updates_data')
+
+        return redirect(url_for('view_shift_updates'))
 
     return render_template('add_update.html', current_date=current_date)
-
-
 
 
 @app.route('/edit_by_date_shift', methods=['GET', 'POST'])
@@ -561,6 +633,8 @@ def edit_update():
 
         if update:
             # Update the fields of the existing record
+            update.p0_updates = request.form['p0_updates']
+            update.p1_updates = request.form['p1_updates']
             update.done_in_shift = request.form['done_in_shift']
             update.update_to_next_shift = request.form['update_to_next_shift']
             update.alerts_handled = request.form['alerts_handled']
@@ -584,7 +658,6 @@ def edit_update():
             update.activity = request.form['activity']
             update.db_loads = request.form['db_loads']
             update.follow_ups = request.form['follow_ups']
-            update.shift_engineer = request.form['shift_engineer']
 
             db.session.commit()
 
@@ -607,7 +680,6 @@ def get_by_date_shift():
 
 
 #############################################get-update############################################################
-
 @app.route('/get_update', methods=['GET', 'POST'])
 @login_required
 def get_update():
@@ -615,16 +687,69 @@ def get_update():
         date = request.args.get('date')
         shift_type = request.args.get('shift_type')
 
-        # Query the database to get the update for the selected date and shift type
-        update = ShiftUpdate.query.filter_by(date=date, shift_type=shift_type).first()
+        # Try to retrieve the update from Redis
+        redis_key = f'update:{date}:{shift_type}'
+        update_data = redis.hgetall(redis_key)
+
+        if not update_data:
+            # Data not found in Redis, fetch it from the database
+            update = ShiftUpdate.query.filter_by(date=date, shift_type=shift_type).first()
+            print(update)
+
+            if update:
+                # Convert the SQLAlchemy model to a dictionary
+                update_data = {
+                    'p0_updates': update.p0_updates,
+                    'p1_updates': update.p1_updates,
+                    'done_in_shift': update.done_in_shift,
+                    'update_to_next_shift': update.update_to_next_shift,
+                    'alerts_handled': update.alerts_handled,
+                    'actioned_alerts': update.actioned_alerts,
+                    'manual_restarts': update.manual_restarts,
+                    'tasks': update.tasks,
+                    'resolved_tasks': update.resolved_tasks,
+                    'closed_tasks': update.closed_tasks,
+                    'dev_requests_calls': update.dev_requests_calls,
+                    'dev_requests_pi_calls': update.dev_requests_pi_calls,
+                    'dev_requests_debug_loggers': update.dev_requests_debug_loggers,
+                    'dev_requests_noise': update.dev_requests_noise,
+                    'dev_requests_jar_replace': update.dev_requests_jar_replace,
+                    'dev_requests_replicas': update.dev_requests_replicas,
+                    'dev_requests_threads': update.dev_requests_threads,
+                    'db_queries_single': update.db_queries_single,
+                    'db_queries_all_pods': update.db_queries_all_pods,
+                    'jira_so_tickets': update.jira_so_tickets,
+                    'jira_ops_to_engg': update.jira_ops_to_engg,
+                    'capacity_changes': update.capacity_changes,
+                    'activity': update.activity,
+                    'db_loads': update.db_loads,
+                    'follow_ups': update.follow_ups
+                }
+
+                # Remove keys with None values
+                update_data = {k: v for k, v in update_data.items() if v is not None}
+
+                # Store the data in Redis for future use
+                redis.hmset(redis_key, update_data)
+            else:
+                # Handle the case where the record is not found
+                return "Record not found", 404
+        else:
+            # Data found in Redis, convert it to the appropriate data types
+            for key in update_data:
+                if key not in ['date', 'shift_type']:
+                    try:
+                        update_data[key] = int(update_data[key])
+                    except ValueError:
+                        # Handle non-integer values here, or leave them as-is if appropriate
+                        update_data[key] = 0
+
+            update = update_data
+            print(update)
 
         return render_template('get_update.html', update=update)
 
     return render_template('get_update.html')
-
-
-# Define the 'CSV_DOWNLOAD_FOLDER' configuration key
-app.config['CSV_DOWNLOAD_FOLDER'] = '/root/project1/'
 
 
 import smtplib
@@ -640,7 +765,6 @@ def email_update():
 
     # Query the database to get the update for the selected date and shift type
     update = ShiftUpdate.query.filter_by(date=date, shift_type=shift_type).first()
-    print(update)
 
     # Create the HTML content for the email
     html_content = render_template('email_updates.html', update=update)
@@ -775,8 +899,6 @@ def get_month_name(month_value):
 
 
 #########################################################Tracker######################################################
-
-
 @app.route('/tracker', methods=['GET', 'POST'])
 @login_required
 def tracker():
@@ -851,6 +973,7 @@ def view_tracker_data():
     except Exception as e:
         # Handle any exceptions here
         return str(e)  # You can customize the error handling as needed
+
 
 
 @app.route('/home')
@@ -1035,6 +1158,9 @@ def add():
         else:
             duration = None
         category = request.form['category']
+        if category == 'OTHER':
+            category = request.form['otherCategory']
+
         podname = request.form['podname']
         description = request.form['description']
         service_impacted = request.form['service_impacted']
@@ -1065,6 +1191,14 @@ def add():
     active_menu_item = 'add-updates-link'
     return render_template('add.html', active_menu_item=active_menu_item)
 
+
+@app.route('/view')
+@login_required
+def view():
+    # Retrieve data from the database using SQLAlchemy
+    updates = CriticalUpdates.query.all()
+
+    return render_template('view.html', updates=updates)
 
 @app.route('/logout')
 @login_required
@@ -1375,12 +1509,14 @@ def download_monthly_updates():
 
 ##----------debug_logs-------------------------#
 @app.route('/debug')
+@login_required
 def debug():
     debug_logs = DebugLog.query.all()
     return render_template('debug.html', debug_logs=debug_logs)
 
 
 @app.route('/add_debug_log', methods=['GET','POST'])
+@login_required
 def add_debug_log():
     date = request.form['date']
     pod_name = request.form['pod_name']
@@ -1400,6 +1536,7 @@ def add_debug_log():
 
 
 @app.route('/view_debug_logs', methods=['GET'])
+@login_required
 def view_debug_logs():
     debug_logs = DebugLog.query.all()
     return render_template('view_debug_logs.html', debug_logs=debug_logs)
@@ -1408,6 +1545,7 @@ def view_debug_logs():
 
 
 @app.route('/update_jira_status/<int:id>', methods=['POST'])
+@login_required
 def update_jira_status(id):
     if request.method == 'POST':
         debug_log = DebugLog.query.get(id)
@@ -1428,4 +1566,36 @@ def update_jira_status(id):
             db.session.commit()
 
     return redirect(url_for('view_debug_logs'))
+
+#####################------Dev----------###################################
+@app.route('/add_dev_requests', methods=['GET', 'POST'])
+@login_required
+def add_dev_requests():
+    if request.method == 'POST':
+        date = request.form['date']
+        calls = request.form.get('calls', None)
+        pi_calls = request.form.get('pi_calls', None)
+        noise = request.form.get('noise', None)
+        jar_replace = request.form.get('jar_replace', None)
+        replicas = request.form.get('replicas', None)
+        threads = request.form.get('threads', None)
+
+        dev_requests = DevRequests(date=date, calls=calls, pi_calls=pi_calls, noise=noise, jar_replace=jar_replace, replicas=replicas, threads=threads)
+
+        db.session.add(dev_requests)
+        db.session.commit()
+
+        return redirect(url_for('index'))
+
+    return render_template('add_dev_requests.html')
+
+
+@app.route('/view_dev_requests')
+@login_required
+def view_dev_requests():
+    dev_requests_data = DevRequests.query.all()
+    return render_template('view_dev_requests.html', dev_requests_data=dev_requests_data)
+
+    dev_requests_data = DevRequests.query.all()
+    return render_template('view_dev_requests.html', dev_requests_data=dev_requests_data)
 

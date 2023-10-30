@@ -93,16 +93,13 @@
                     <th style="width: 60px;">Shift Type</th>
                     <th style="width: 60px;">Total Alerts</th>
                     <th style="width: 80px;">Shift Engineers</th>
-                    <!-- Add more table headers for additional columns -->
                     <th style="width: 10px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for update in updates %}
                 <tr>
-                    <td>
-                        {{ update.date.strftime('%d-%m-%Y') }}
-                    </td>
+		    <td>{{ update.date }}</td>
                     <td>{{ update.shift_type }}</td>
                     <td>{{ update.alerts_handled }}</td>
                     <td>{{ update.shift_engineer }}</td>

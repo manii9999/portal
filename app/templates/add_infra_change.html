@@ -128,8 +128,11 @@
         </select><br>
 
 
-        <label class="form-label" for="jira">Jira:</label>
-        <input type="text" id="jira" name="jira" placeholder="SO-" required class="form-field"><br>
+
+            <label class="form-label" for="jira">Jira ID:</label>
+            <input type="text" name="jira" id="jira" class="form-field" required>
+	    <br>
+
 
         <label class="form-label" for="approved_by">Approved By:</label>
         <select id="approved_by" name="approved_by" required class="form-field">
@@ -209,6 +212,16 @@
             nodeNamesContainer.removeChild(lastNodeNameInput);
         }
     });
+    const jiraIdInput = document.getElementById('jira');
+
+    jiraIdInput.addEventListener('input', function () {
+        if (!jiraIdInput.value.startsWith('SO-')) {
+            jiraIdInput.setCustomValidity("Jira ID must start with 'SO-'");
+        } else {
+            jiraIdInput.setCustomValidity('');
+        }
+    });
+
 </script>
 {% endblock %}
 

@@ -1,0 +1,110 @@
+{% extends "d_updates.html" %}
+{% block data_content %}
+<link rel="stylesheet" href="static/button.css">
+<style>
+    h2 {
+        font-size: 14px;
+        font-family: Tahoma, sans-serif;
+    }
+    .error-message {
+        color: red;
+        margin-top: -20px;
+        padding: 5px;
+    }
+    .form-label {
+        display: inline-block;
+        font-family: Tahoma, sans-serif;
+        width: 150px;
+        text-align: right;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-size: 12px;
+    }
+    select {
+        font-size: 12px;
+    }
+    .success-message {
+        color: green;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    table, th, td {
+        border: 1px solid #ddd;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        text-align: center;
+        padding: 5px;
+        font-size: 12px;
+        vertical-align: middle; /* Vertically align content in cells */
+        font-family: Tahoma, sans-serif;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .update-form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .update-button {
+        margin-left: 10px; /* Adjust the spacing between the select and button */
+    }
+</style>
+<body>
+<div class="message">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</div>
+<div class="form">
+    <h2>View Dev Requests</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Calls</th>
+                <th>PI Calls</th>
+                <th>Noise</th>
+                <th>Jar Replace</th>
+                <th>Replicas</th>
+                <th>Threads</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dev_request in dev_requests_data %}
+            <tr>
+                <td>{{ dev_request.id }}</td>
+                <td>{{ dev_request.date.strftime('%d-%m-%Y') }}</td>
+                <td>{{ dev_request.calls }}</td>
+                <td>{{ dev_request.pi_calls }}</td>
+                <td>{{ dev_request.noise }}</td>
+                <td>{{ dev_request.jar_replace }}</td>
+                <td>{{ dev_request.replicas }}</td>
+                <td>{{ dev_request.threads }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
+{% endblock %}
+

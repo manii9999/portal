@@ -45,6 +45,11 @@
         .side-panel a:hover {
             text-decoration: underline;
         }
+	.side-panel a.active {
+	    background-color: #0077c8; /* Set the background color for the active link */
+	    color: #fff; /* Set the text color for the active link */
+	}
+
 
         /* Container for data on the right */
         .data-container {
@@ -69,9 +74,10 @@
         <div class="side-panel">
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('view_shift_updates') }}">View Shift Updates</a></li>
-                    <li><a href="{{ url_for('view_updates') }}">View Updates By Date</a></li>
-                    <li><a href="{{ url_for('infra_changes') }}">View Capacity Changes</a></li>
+		<li><a href="{{ url_for('view_shift_updates') }}" data-item-id="view_shift_updates">View Shift Updates</a></li>
+		<li><a href="{{ url_for('view_updates') }}" data-item-id="view_updates">View Updates By Date</a></li>
+		<li><a href="{{ url_for('infra_changes') }}" data-item-id="infra_changes">View Capacity Changes</a></li>
+
                 </ul>
             </nav>
         </div>
@@ -80,6 +86,35 @@
         <div class="data-container">
             {% block data_content %}{% endblock %}
         </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidePanelLinks = document.querySelectorAll('.side-panel a');
+
+    // Function to highlight the selected menu item
+    function highlightSelectedItem(item) {
+        sidePanelLinks.forEach(link => {
+            link.classList.remove('active'); // Remove the 'active' class from all links
+        });
+
+        item.classList.add('active'); // Add the 'active' class to the selected link
+    }
+
+    // Add click event listeners to the side panel links
+    sidePanelLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            highlightSelectedItem(this); // Highlight the clicked link
+        });
+    });
+
+    // Initially highlight the link that corresponds to the current page
+    const currentPage = window.location.pathname.split('/').pop();
+    const linkToHighlight = document.querySelector(`[data-item-id="${currentPage}"]`);
+    if (linkToHighlight) {
+        highlightSelectedItem(linkToHighlight);
+    }
+});
+
+</script>
     </body>
 </html>
 {% endblock %}

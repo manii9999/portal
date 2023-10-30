@@ -62,6 +62,11 @@
             list-style: none;
             padding: 0;
         }
+	.side-panel a.active {
+	    background-color: #0077c8; /* Set the background color for the active link */
+	    color: #fff; /* Set the text color for the active link */
+	}
+
     </style>
 </head>
 <body>
@@ -69,8 +74,11 @@
         <div class="side-panel">
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('debug') }}">Add Debug Logs</a></li>
-                    <li><a href="{{ url_for('view_debug_logs') }}">View Debug Logs</a></li>
+		<li><a href="{{ url_for('debug') }}" data-item-id="debug">Add Debug Logs</a></li>
+		<li><a href="{{ url_for('view_debug_logs') }}" data-item-id="view_debug_logs">View Debug Logs</a></li>
+		<li><a href="{{ url_for('add_dev_requests') }}" data-item-id="add_dev_requests">Add Dev Requests</a></li>
+		<li><a href="{{ url_for('view_dev_requests') }}" data-item-id="view_dev_requests">View Dev Requests</a></li>
+
                 </ul>
             </nav>
         </div>
@@ -79,6 +87,36 @@
         <div class="data-container">
             {% block data_content %}{% endblock %}
         </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidePanelLinks = document.querySelectorAll('.side-panel a');
+
+    // Function to highlight the selected menu item
+    function highlightSelectedItem(item) {
+        sidePanelLinks.forEach(link => {
+            link.classList.remove('active'); // Remove the 'active' class from all links
+        });
+
+        item.classList.add('active'); // Add the 'active' class to the selected link
+    }
+
+    // Add click event listeners to the side panel links
+    sidePanelLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            highlightSelectedItem(this); // Highlight the clicked link
+        });
+    });
+
+    // Initially highlight the link that corresponds to the current page
+    const currentPage = window.location.pathname.split('/').pop();
+    const linkToHighlight = document.querySelector(`[data-item-id="${currentPage}"]`);
+    if (linkToHighlight) {
+        highlightSelectedItem(linkToHighlight);
+    }
+});
+
+</script>
+
     </body>
 </html>
 {% endblock %}

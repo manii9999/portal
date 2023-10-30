@@ -41,6 +41,11 @@
         margin-top: 10px;
         font-size: 14px;
    }
+   button {
+        margin-left: 170px;
+        margin-top: 10px;
+   }
+
 </style>
 
 <div class="form">
@@ -65,13 +70,16 @@
         </select>
         <div class="error-message" id="durationHelp"></div><br>
 
-        <label class="form-label" for="category">Category:</label>
-        <select id="category" name="category" required>
-            <option value="" disabled selected>--select--</option>
-            <option value="P0">P0</option>
-            <option value="P1">P1</option>
-            <option value="OTHER">OTHER</option>
-        </select><br>
+<label class="form-label" for="category">Category:</label>
+<select id="categoryDropdown" name="category" required>
+    <option value="" disabled selected>--select--</option>
+    <option value="P0">P0</option>
+    <option value="P1">P1</option>
+    <option value="OTHER">OTHER</option>
+</select><br>
+<label class="form-label" for="otherCategory">Other Category:</label>
+<input type="text" id="otherCategoryInput" name="otherCategory" disabled><br>
+
 
         <label class="form-label" for="podname">POD Name:</label>
         <select id="podname" name="podname" required>
@@ -102,6 +110,17 @@
 </div>
 
 <script>
+const categoryDropdown = document.getElementById('categoryDropdown');
+const otherCategoryInput = document.getElementById('otherCategoryInput');
+
+categoryDropdown.addEventListener('change', function () {
+    if (categoryDropdown.value === 'OTHER') {
+        otherCategoryInput.removeAttribute('disabled');
+    } else {
+        otherCategoryInput.setAttribute('disabled', 'true');
+    }
+});
+
     // JavaScript to set the date input to the current date
     window.onload = function () {
         let currentDate = new Date().toISOString().split('T')[0];

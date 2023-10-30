@@ -5,7 +5,7 @@
 <style>
     h2 {
         font-size: 14px;
-	font-family: Tahoma, sans-serif;
+        font-family: Tahoma, sans-serif;
     }
     .error-message {
         color: red;
@@ -14,7 +14,7 @@
     }
     .form-label {
         display: inline-block;
-	font-family: Tahoma, sans-serif;
+        font-family: Tahoma, sans-serif;
         width: 150px;
         text-align: right;
         padding-right: 10px;
@@ -31,6 +31,12 @@
         margin-top: 10px;
         font-size: 14px;
     }
+    input[type="submit"] {
+        margin-left: 170px;
+        margin-top: 10px;
+        background-color: #cccccc;
+    }
+
 </style>
 <div class="form">
     <h2>Add Debug Log</h2>
@@ -46,7 +52,7 @@
             <!-- Add more options as needed -->
         </select>
         <br>
-        <label for="application" class="form-label">Application:</label>
+        <label for "application" class="form-label">Application:</label>
         <select id="application" name="application" required>
             <option value="App 1">App 1</option>
             <option value="App 2">App 2</option>
@@ -67,8 +73,28 @@
             <!-- Add more options as needed -->
         </select>
         <br>
-        <button type="submit">Add Debug Log</button>
+        <input type="submit" value="Add Debug Log" id="submit-button" disabled>
     </form>
 </div>
+
+<script>
+    const inputs = document.querySelectorAll('input[type="text"]');
+    const dateInput = document.getElementById('date');
+    const submitButton = document.getElementById('submit-button');
+
+    // Set the date input to the current date (today)
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    dateInput.value = `${year}-${month}-${day}`;
+
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            const isAnyInputFilled = Array.from(inputs).some(input => input.value.trim() !== '');
+            submitButton.disabled = !isAnyInputFilled;
+        });
+    });
+</script>
 {% endblock %}
 

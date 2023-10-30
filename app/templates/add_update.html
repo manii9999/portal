@@ -131,33 +131,80 @@
         <!-- Include other form fields -->
         <!-- For example: -->
 <div class="row">
-        <div class="column" style="background-color:#bbb;">
-                <label for="done_in_shift">Done in Shift:</label>
-                <textarea name="done_in_shift" rows="1" cols="50" required class="auto-expand"></textarea>
+        <div class="column" style="background-color:#f2f2f2;">
+		<label for="p0_updates">P0 Updates:</label>
+                <textarea name="p0_updates" rows="1" cols="50" class="auto-expand"></textarea>
+                
+		<label for="p1_updates">P1 Updates:</label>
+                <textarea name="p1_updates" rows="1" cols="50" class="auto-expand"></textarea>
+
+		<label for="done_in_shift">Done in Shift:</label>
+		<textarea name="done_in_shift" rows="1" cols="50" required class="auto-expand"></textarea>
+
+		<label for="update_to_next_shift">Update to Next Shift:</label>
+                <textarea name="update_to_next_shift" rows="1" cols="50" required class="auto-expand"></textarea>
+		
+		<label for="activity">Activity:</label>
+                <textarea name="activity" rows="1" cols="50" class="auto-expand"></textarea>
+
                 <label for="actioned_alerts">Actioned Alerts:</label>
                 <input type="number" name="actioned_alerts" required>
+		
 		<label for="alerts_handled">Alerts Handled:</label>
                 <input type="number" name="alerts_handled" required>
-                <label for="manual_restarts">Manual Restarts:</label>
+                
+		<label for="manual_restarts">Manual Restarts:</label>
                 <input type="number" name="manual_restarts" required>
-                <label for="db_queries_single">DB Queries Single:</label>
-		<input type="number" name="db_queries_single" required>
-		<label for="db_queries_all_pods">DB Queries All Pods:</label>
-		<input type="number" name="db_queries_all_pods" required>
-            </div>
-	<div class="column" style="background-color:#bbb;">
-                <label for="update_to_next_shift">Update to Next Shift:</label>
-                <textarea name="update_to_next_shift" rows="1" cols="50" required class="auto-expand"></textarea>
-                <label for="tasks">Tasks:</label>
+                
+		<label for="tasks">Tasks:</label>
                 <input type="number" name="tasks" required>
-                <label for="resolved_tasks">Resolved Tasks:</label>
+                
+		<label for="resolved_tasks">Resolved Tasks:</label>
                 <input type="number" name="resolved_tasks" required>
+                
 		<label for="closed_tasks">Closed Tasks:</label>
                 <input type="number" name="closed_tasks" required>
+
+                <label for="db_queries_single">DB Queries Single:</label>
+		<input type="number" name="db_queries_single">
+		
+		<label for="db_queries_all_pods">DB Queries All Pods:</label>
+		<input type="number" name="db_queries_all_pods">
+            </div>
+	<div class="column" style="background-color:#f2f2f2;">
+                <label for="jira_so_tickets">Jira SO Tickets:</label>
+                <textarea name="jira_so_tickets" rows="1" cols="50" class="auto-expand"></textarea>
+
+                <label for="jira_ops_to_engg">Jira Ops to Engg:</label>
+                <textarea name="jira_ops_to_engg" rows="1" cols="50" class="auto-expand"></textarea>
+                
+		<label for="dev_requests_calls">Dev Requests Calls:</label>
+                <textarea name="dev_requests_calls" rows="1" cols="50" class="auto-expand"></textarea>
+
+                <label for="dev_requests_pi_calls">Dev Requests PI Calls:</label>
+                <textarea name="dev_requests_pi_calls" rows="1" cols="50" class="auto-expand"></textarea>
+
+                <label for="dev_requests_debug_loggers">Dev Requests Debug Loggers:</label>
+                <textarea name="dev_requests_debug_loggers" rows="1" cols="50" class="auto-expand"></textarea>
+
+                <label for="dev_requests_noise">Dev Requests Noise:</label>
+                <textarea name="dev_requests_noise" rows="1" cols="50" class="auto-expand"></textarea>
+
+                <label for="dev_requests_jar_replace">Dev Requests Jar Replace:</label>
+                <textarea name="dev_requests_jar_replace" rows="1" cols="50" class="auto-expand"></textarea>
+
+                <label for="dev_requests_replicas">Dev Requests Replicas:</label>
+                <textarea name="dev_requests_replicas" rows="1" cols="50" class="auto-expand"></textarea>
+
+                <label for="dev_requests_threads">Dev Requests Threads:</label>
+                <textarea name="dev_requests_threads" rows="1" cols="50" class="auto-expand"></textarea>
+
                 <label for="db_loads">DB Loads:</label>
-                <textarea name="db_loads" rows="1" cols="50" required class="auto-expand"></textarea>
-                <label for="follow_ups">Follow Ups:</label>
-                <textarea name="follow_ups" rows="1" cols="50" required class="auto-expand"></textarea>
+                <textarea name="db_loads" rows="1" cols="50" class="auto-expand"></textarea>
+
+		<label for="follow_ups">Follow Ups:</label>
+                <textarea name="follow_ups" rows="1" cols="50" class="auto-expand"></textarea>
+
             </div>
         </div>
 
