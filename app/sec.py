@@ -13,5 +13,4 @@ def generate_secret_key(length):
 # Generate a secret key of the specified length
 app_secret_key = generate_secret_key(key_length)
 
-print("Generated Secret Key:", app_secret_key)
 
